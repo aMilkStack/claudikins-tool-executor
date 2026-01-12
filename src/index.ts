@@ -232,6 +232,12 @@ async function main() {
   // Start lifecycle management (idle cleanup, shutdown handlers)
   startLifecycleManagement();
 
+  // Exit gracefully when client disconnects (prevents orphan processes)
+  process.stdin.on("close", () => {
+    console.error("Client disconnected, shutting down");
+    process.exit(0);
+  });
+
   const transport = new StdioServerTransport();
   await server.connect(transport);
 
