@@ -1,0 +1,34 @@
+name: gemini-extract
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    text:
+      type: string
+      description: The text to extract information from
+    extractType:
+      type: string
+      enum:
+        - entities
+        - facts
+        - summary
+        - keywords
+        - sentiment
+        - custom
+      description: What type of information to extract
+    customFields:
+      type: string
+      description: 'For custom extraction: comma-separated list of fields to extract. Example: "name, date, amount, description"'
+  required:
+    - text
+    - extractType
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-extract"]({
+    text: "<text>",
+    extractType: "<extractType>",
+    customFields: "<customFields>"
+  });

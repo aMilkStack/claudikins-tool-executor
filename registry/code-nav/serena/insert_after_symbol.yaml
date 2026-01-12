@@ -1,0 +1,34 @@
+name: insert_after_symbol
+server: serena
+category: code-nav
+description: |-
+  Inserts the given body/content after the end of the definition of the given symbol (via the symbol's location).
+  A typical use case is to insert a new class, function, method, field or variable assignment.
+inputSchema:
+  type: object
+  properties:
+    name_path:
+      title: Name Path
+      type: string
+      description: Name path of the symbol after which to insert content (definitions in the `find_symbol` tool apply).
+    relative_path:
+      title: Relative Path
+      type: string
+      description: The relative path to the file containing the symbol.
+    body:
+      title: Body
+      type: string
+      description: |-
+        The body/content to be inserted. The inserted code shall begin with the next line after
+        the symbol.
+  required:
+    - name_path
+    - relative_path
+    - body
+  title: applyArguments
+example: |-
+  await serena["insert_after_symbol"]({
+    name_path: "<name_path>",
+    relative_path: "<relative_path>",
+    body: "<body>"
+  });

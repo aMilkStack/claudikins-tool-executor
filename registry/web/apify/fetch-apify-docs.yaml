@@ -1,0 +1,31 @@
+name: fetch-apify-docs
+server: apify
+category: web
+description: |-
+  Fetch the full content of an Apify or Crawlee documentation page by its URL.
+  Use this after finding a relevant page with the search-apify-docs tool.
+
+  USAGE:
+  - Use when you need the complete content of a specific docs page for detailed answers.
+
+  USAGE EXAMPLES:
+  - user_input: Fetch https://docs.apify.com/platform/actors/running#builds
+  - user_input: Fetch https://docs.apify.com/academy
+  - user_input: Fetch https://crawlee.dev/docs/guides/basic-concepts
+inputSchema:
+  type: object
+  properties:
+    url:
+      type: string
+      minLength: 1
+      description: >-
+        URL of the Apify documentation page to fetch. This should be the full URL, including the protocol (e.g.,
+        https://docs.apify.com/).
+  required:
+    - url
+  $schema: https://json-schema.org/draft/2020-12/schema
+  additionalProperties: false
+example: |-
+  await apify["fetch-apify-docs"]({
+    url: "<url>"
+  });

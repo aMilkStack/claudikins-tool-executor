@@ -1,0 +1,64 @@
+name: update_notebook
+server: notebooklm
+category: knowledge
+description: |-
+  Update notebook metadata based on user intent.
+
+  ## Pattern
+  1) Identify target notebook and fields (topics, description, use_cases, tags, url)
+  2) Propose the exact change back to the user
+  3) After explicit confirmation, call this tool
+
+  ## Examples
+  - User: "React notebook also covers Next.js 14"
+    You: "Add 'Next.js 14' to topics for React?"
+    User: "Yes" → call update_notebook
+
+  - User: "Include error handling in n8n description"
+    You: "Update the n8n description to mention error handling?"
+    User: "Yes" → call update_notebook
+
+  Tip: You may update multiple fields at once if requested.
+inputSchema:
+  type: object
+  properties:
+    id:
+      type: string
+      description: The notebook ID to update
+    name:
+      type: string
+      description: New display name
+    description:
+      type: string
+      description: New description
+    topics:
+      type: array
+      items:
+        type: string
+      description: New topics list
+    content_types:
+      type: array
+      items:
+        type: string
+      description: New content types
+    use_cases:
+      type: array
+      items:
+        type: string
+      description: New use cases
+    tags:
+      type: array
+      items:
+        type: string
+      description: New tags
+    url:
+      type: string
+      description: New notebook URL
+  required:
+    - id
+example: |-
+  await notebooklm["update_notebook"]({
+    id: "<id>",
+    name: "<name>",
+    description: "<description>"
+  });

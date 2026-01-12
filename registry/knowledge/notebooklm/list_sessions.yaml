@@ -1,0 +1,10 @@
+name: list_sessions
+server: notebooklm
+category: knowledge
+description: >-
+  List all active sessions with stats (age, message count, last activity). Use to continue the most relevant session
+  instead of starting from scratch.
+inputSchema:
+  type: object
+  properties: {}
+example: await notebooklm.list_sessions({});

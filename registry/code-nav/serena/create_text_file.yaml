@@ -1,0 +1,24 @@
+name: create_text_file
+server: serena
+category: code-nav
+description: Write a new file or overwrite an existing file. Returns a message indicating success or failure.
+inputSchema:
+  type: object
+  properties:
+    relative_path:
+      title: Relative Path
+      type: string
+      description: The relative path to the file to create.
+    content:
+      title: Content
+      type: string
+      description: The (appropriately encoded) content to write to the file.
+  required:
+    - relative_path
+    - content
+  title: applyArguments
+example: |-
+  await serena["create_text_file"]({
+    relative_path: "<relative_path>",
+    content: "<content>"
+  });

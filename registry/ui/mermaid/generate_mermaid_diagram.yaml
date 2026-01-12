@@ -1,0 +1,56 @@
+name: generate_mermaid_diagram
+server: mermaid
+category: ui
+description: >-
+  Generate mermaid diagram and chart with mermaid syntax dynamically. Mermaid is a JavaScript based diagramming and
+  charting tool that uses Markdown-inspired text definitions and a renderer to create and modify complex diagrams. The
+  main purpose of Mermaid is to help documentation catch up with development.
+inputSchema:
+  type: object
+  properties:
+    mermaid:
+      type: string
+      minLength: 1
+      description: |-
+        The mermaid diagram syntax used to be generated, such as, graph TD;
+        A-->B;
+        A-->C;
+        B-->D;
+        C-->D;.
+    theme:
+      type: string
+      enum:
+        - default
+        - base
+        - forest
+        - dark
+        - neutral
+      description: Theme for the diagram (optional). Default is 'default'.
+      default: default
+    backgroundColor:
+      type: string
+      description: Background color for the diagram (optional). Default is 'white'.
+      default: white
+    outputType:
+      type: string
+      enum:
+        - base64
+        - svg
+        - mermaid
+        - file
+        - svg_url
+        - png_url
+      description: >-
+        The output type of the diagram. Can be 'base64', 'svg', 'mermaid', 'file', 'svg_url', or 'png_url'. Default is
+        'base64'. 'base64' returns PNG image as base64 encoded string. 'file' saves the PNG image to disk. The *_url
+        options return public mermaid.ink links for remote-friendly sharing.
+      default: base64
+  required:
+    - mermaid
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await mermaid["generate_mermaid_diagram"]({
+    mermaid: "<mermaid>",
+    theme: "<theme>",
+    backgroundColor: "<backgroundColor>"
+  });

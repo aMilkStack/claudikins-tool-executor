@@ -1,0 +1,11 @@
+name: check_onboarding_performed
+server: serena
+category: code-nav
+description: |-
+  Checks whether project onboarding was already performed.
+  You should always call this tool before beginning to actually work on the project/after activating a project.
+inputSchema:
+  type: object
+  properties: {}
+  title: applyArguments
+example: await serena.check_onboarding_performed({});

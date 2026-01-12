@@ -1,0 +1,9 @@
+name: prepare_for_new_conversation
+server: serena
+category: code-nav
+description: Instructions for preparing for a new conversation. This tool should only be called on explicit user request.
+inputSchema:
+  type: object
+  properties: {}
+  title: applyArguments
+example: await serena.prepare_for_new_conversation({});

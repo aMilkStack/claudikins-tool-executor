@@ -1,0 +1,22 @@
+name: gemini-deep-research
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    query:
+      type: string
+      description: The research question or topic to investigate
+    format:
+      type: string
+      description: Optional output format instructions (e.g., 'technical report with sections')
+  required:
+    - query
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-deep-research"]({
+    query: "<query>",
+    format: "<format>"
+  });

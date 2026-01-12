@@ -1,0 +1,42 @@
+name: edit_memory
+server: serena
+category: code-nav
+description: Replaces content matching a regular expression in a memory.
+inputSchema:
+  type: object
+  properties:
+    memory_file_name:
+      title: Memory File Name
+      type: string
+      description: The name of the memory.
+    needle:
+      title: Needle
+      type: string
+      description: |-
+        The string or regex pattern to search for.
+        If `mode` is "literal", this string will be matched exactly.
+        If `mode` is "regex", this string will be treated as a regular expression (syntax of Python's `re` module,
+        with flags DOTALL and MULTILINE enabled).
+    repl:
+      title: Repl
+      type: string
+      description: The replacement string (verbatim).
+    mode:
+      enum:
+        - literal
+        - regex
+      title: Mode
+      type: string
+      description: Either "literal" or "regex", specifying how the `needle` parameter is to be interpreted.
+  required:
+    - memory_file_name
+    - needle
+    - repl
+    - mode
+  title: applyArguments
+example: |-
+  await serena["edit_memory"]({
+    memory_file_name: "<memory_file_name>",
+    needle: "<needle>",
+    repl: "<repl>"
+  });

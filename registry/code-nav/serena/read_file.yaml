@@ -1,0 +1,44 @@
+name: read_file
+server: serena
+category: code-nav
+description: >-
+  Reads the given file or a chunk of it. Generally, symbolic operations
+
+  like find_symbol or find_referencing_symbols should be preferred if you know which symbols you are looking for.
+  Returns the full text of the file at the given relative path.
+inputSchema:
+  type: object
+  properties:
+    relative_path:
+      title: Relative Path
+      type: string
+      description: The relative path to the file to read.
+    start_line:
+      default: 0
+      title: Start Line
+      type: integer
+      description: The 0-based index of the first line to be retrieved.
+    end_line:
+      anyOf:
+        - type: integer
+        - type: 'null'
+      default: null
+      title: End Line
+      description: The 0-based index of the last line to be retrieved (inclusive). If None, read until the end of the file.
+    max_answer_chars:
+      default: -1
+      title: Max Answer Chars
+      type: integer
+      description: |-
+        If the file (chunk) is longer than this number of characters,
+        no content will be returned. Don't adjust unless there is really no other way to get the content
+        required for the task.
+  required:
+    - relative_path
+  title: applyArguments
+example: |-
+  await serena["read_file"]({
+    relative_path: "<relative_path>",
+    start_line: 0,
+    end_line: "<end_line>"
+  });

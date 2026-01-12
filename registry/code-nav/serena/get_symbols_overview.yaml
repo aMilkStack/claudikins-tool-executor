@@ -1,0 +1,38 @@
+name: get_symbols_overview
+server: serena
+category: code-nav
+description: |-
+  Use this tool to get a high-level understanding of the code symbols in a file.
+  This should be the first tool to call when you want to understand a new file, unless you already know
+  what you are looking for. Returns a JSON object containing symbols grouped by kind in a compact format.
+inputSchema:
+  type: object
+  properties:
+    relative_path:
+      title: Relative Path
+      type: string
+      description: The relative path to the file to get the overview of.
+    depth:
+      default: 0
+      title: Depth
+      type: integer
+      description: |-
+        Depth up to which descendants of top-level symbols shall be retrieved
+        (e.g. 1 retrieves immediate children). Default 0.
+    max_answer_chars:
+      default: -1
+      title: Max Answer Chars
+      type: integer
+      description: |-
+        If the overview is longer than this number of characters,
+        no content will be returned. -1 means the default value from the config will be used.
+        Don't adjust unless there is really no other way to get the content required for the task.
+  required:
+    - relative_path
+  title: applyArguments
+example: |-
+  await serena["get_symbols_overview"]({
+    relative_path: "<relative_path>",
+    depth: 0,
+    max_answer_chars: 0
+  });

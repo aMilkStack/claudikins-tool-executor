@@ -1,0 +1,31 @@
+name: select_notebook
+server: notebooklm
+category: knowledge
+description: |-
+  Set a notebook as the active default (used when ask_question has no notebook_id).
+
+  ## When To Use
+  - User switches context: "Let's work on React now"
+  - User asks explicitly to activate a notebook
+  - Obvious task change requires another notebook
+
+  ## Auto-Switching
+  - Safe to auto-switch if the context is clear and you announce it:
+    "Switching to React notebook for this task..."
+  - If ambiguous, ask: "Switch to [notebook] for this task?"
+
+  ## Example
+  User: "Now let's build the React frontend"
+  You: "Switching to React notebook..." (call select_notebook)
+inputSchema:
+  type: object
+  properties:
+    id:
+      type: string
+      description: The notebook ID to activate
+  required:
+    - id
+example: |-
+  await notebooklm["select_notebook"]({
+    id: "<id>"
+  });

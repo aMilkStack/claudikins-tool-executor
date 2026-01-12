@@ -1,0 +1,33 @@
+name: gemini-create-cache
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    filePath:
+      type: string
+      description: Path to the file to cache
+    displayName:
+      type: string
+      description: A name to identify this cache
+    systemInstruction:
+      type: string
+      description: System instruction to include with the cache
+    ttlMinutes:
+      type: number
+      minimum: 1
+      maximum: 1440
+      default: 60
+      description: Time to live in minutes (1-1440, default 60)
+  required:
+    - filePath
+    - displayName
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-create-cache"]({
+    filePath: "<filePath>",
+    displayName: "<displayName>",
+    systemInstruction: "<systemInstruction>"
+  });

@@ -1,0 +1,30 @@
+name: gemini-brainstorm
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    prompt:
+      type: string
+      description: The problem statement or query to brainstorm about
+    maxRounds:
+      type: integer
+      minimum: 1
+      maximum: 5
+      default: 3
+      description: Maximum number of brainstorming rounds
+    claudeThoughts:
+      type: string
+      description: Claude's initial thoughts on the problem
+  required:
+    - prompt
+    - claudeThoughts
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-brainstorm"]({
+    prompt: "<prompt>",
+    maxRounds: 0,
+    claudeThoughts: "<claudeThoughts>"
+  });

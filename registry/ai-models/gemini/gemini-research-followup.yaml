@@ -1,0 +1,23 @@
+name: gemini-research-followup
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    researchId:
+      type: string
+      description: The research ID from a completed research task
+    question:
+      type: string
+      description: Follow-up question about the research results
+  required:
+    - researchId
+    - question
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-research-followup"]({
+    researchId: "<researchId>",
+    question: "<question>"
+  });

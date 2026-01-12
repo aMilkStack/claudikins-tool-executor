@@ -1,0 +1,83 @@
+name: add_notebook
+server: notebooklm
+category: knowledge
+description: |-
+  PERMISSION REQUIRED — Only when user explicitly asks to add a notebook.
+
+  ## Conversation Workflow (Mandatory)
+  When the user says: "I have a NotebookLM with X"
+
+  1) Ask URL: "What is the NotebookLM URL?"
+  2) Ask content: "What knowledge is inside?" (1–2 sentences)
+  3) Ask topics: "Which topics does it cover?" (3–5)
+  4) Ask use cases: "When should we consult it?"
+  5) Propose metadata and confirm:
+     - Name: [suggested]
+     - Description: [from user]
+     - Topics: [list]
+     - Use cases: [list]
+     "Add it to your library now?"
+  6) Only after explicit "Yes" → call this tool
+
+  ## Rules
+  - Do not add without user permission
+  - Do not guess metadata — ask concisely
+  - Confirm summary before calling the tool
+
+  ## Example
+  User: "I have a notebook with n8n docs"
+  You: Ask URL → content → topics → use cases; propose summary
+  User: "Yes"
+  You: Call add_notebook
+
+  ## How to Get a NotebookLM Share Link
+
+  Visit https://notebooklm.google/ → Login (free: 100 notebooks, 50 sources each, 500k words, 50 daily queries)
+  1) Click "+ New" (top right) → Upload sources (docs, knowledge)
+  2) Click "Share" (top right) → Select "Anyone with the link"
+  3) Click "Copy link" (bottom left) → Give this link to Claude
+
+  (Upgraded: Google AI Pro/Ultra gives 5x higher limits)
+inputSchema:
+  type: object
+  properties:
+    url:
+      type: string
+      description: The NotebookLM notebook URL
+    name:
+      type: string
+      description: Display name for the notebook (e.g., 'n8n Documentation')
+    description:
+      type: string
+      description: What knowledge/content is in this notebook
+    topics:
+      type: array
+      items:
+        type: string
+      description: Topics covered in this notebook
+    content_types:
+      type: array
+      items:
+        type: string
+      description: Types of content (e.g., ['documentation', 'examples', 'best practices'])
+    use_cases:
+      type: array
+      items:
+        type: string
+      description: When should Claude use this notebook (e.g., ['Implementing n8n workflows'])
+    tags:
+      type: array
+      items:
+        type: string
+      description: Optional tags for organization
+  required:
+    - url
+    - name
+    - description
+    - topics
+example: |-
+  await notebooklm["add_notebook"]({
+    url: "<url>",
+    name: "<name>",
+    description: "<description>"
+  });

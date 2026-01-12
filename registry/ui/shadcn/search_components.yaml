@@ -1,0 +1,16 @@
+name: search_components
+server: shadcn
+category: ui
+description: Search for shadcn/ui components by keyword
+inputSchema:
+  type: object
+  properties:
+    query:
+      type: string
+      description: Search query to find relevant components
+  required:
+    - query
+example: |-
+  await shadcn["search_components"]({
+    query: "<query>"
+  });

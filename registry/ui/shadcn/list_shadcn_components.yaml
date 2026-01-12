@@ -1,0 +1,9 @@
+name: list_shadcn_components
+server: shadcn
+category: ui
+description: Get a list of all available shadcn/ui components
+inputSchema:
+  type: object
+  properties: {}
+  required: []
+example: await shadcn.list_shadcn_components({});

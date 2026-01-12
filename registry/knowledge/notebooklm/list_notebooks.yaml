@@ -1,0 +1,10 @@
+name: list_notebooks
+server: notebooklm
+category: knowledge
+description: >-
+  List all library notebooks with metadata (name, topics, use cases, URL). Use this to present options, then ask which
+  notebook to use for the task.
+inputSchema:
+  type: object
+  properties: {}
+example: await notebooklm.list_notebooks({});

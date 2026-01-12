@@ -1,0 +1,8 @@
+languages: ["yaml"]
+encoding: "utf-8"
+ignore_all_files_in_gitignore: true
+ignored_paths: []
+read_only: true
+excluded_tools: []
+initial_prompt: "This is a tool registry for tool-executor-mcp. Each YAML file defines an MCP tool with name, server, category, description, and inputSchema."
+project_name: "tool-executor-registry"

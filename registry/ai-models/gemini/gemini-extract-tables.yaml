@@ -1,0 +1,27 @@
+name: gemini-extract-tables
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    filePath:
+      type: string
+      description: Path to the document file
+    outputFormat:
+      type: string
+      enum:
+        - markdown
+        - csv
+        - json
+      default: markdown
+      description: Output format for extracted tables
+  required:
+    - filePath
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-extract-tables"]({
+    filePath: "<filePath>",
+    outputFormat: "<outputFormat>"
+  });

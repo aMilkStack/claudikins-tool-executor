@@ -1,0 +1,9 @@
+name: gemini-list-image-sessions
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties: {}
+  $schema: http://json-schema.org/draft-07/schema#
+example: await gemini.gemini-list-image-sessions({});

@@ -1,0 +1,106 @@
+name: ask_question
+server: notebooklm
+category: knowledge
+description: >-
+  # Conversational Research Partner (NotebookLM • Gemini 2.5 • Session RAG)
+
+
+  ## No Active Notebook
+
+  - Visit https://notebooklm.google to create a notebook and get a share link
+
+  - Use **add_notebook** to add it to your library (explains how to get the link)
+
+  - Use **list_notebooks** to show available sources
+
+  - Use **select_notebook** to set one active
+
+
+  > Auth tip: If login is required, use the prompt 'notebooklm.auth-setup' and then verify with the 'get_health' tool.
+  If authentication later fails (e.g., expired cookies), use the prompt 'notebooklm.auth-repair'.
+
+
+  Tip: Tell the user you can manage NotebookLM library and ask which notebook to use for the current task.
+inputSchema:
+  type: object
+  properties:
+    question:
+      type: string
+      description: The question to ask NotebookLM
+    session_id:
+      type: string
+      description: Optional session ID for contextual conversations. If omitted, a new session is created.
+    notebook_id:
+      type: string
+      description: >-
+        Optional notebook ID from your library. If omitted, uses the active notebook. Use list_notebooks to see
+        available notebooks.
+    notebook_url:
+      type: string
+      description: Optional notebook URL (overrides notebook_id). Use this for ad-hoc queries to notebooks not in your library.
+    show_browser:
+      type: boolean
+      description: >-
+        Show browser window for debugging (simple version). For advanced control (typing speed, stealth, etc.), use
+        browser_options instead.
+    browser_options:
+      type: object
+      description: >-
+        Optional browser behavior settings. Claude can control everything: visibility, typing speed, stealth mode,
+        timeouts. Useful for debugging or fine-tuning.
+      properties:
+        show:
+          type: boolean
+          description: 'Show browser window (default: from ENV or false)'
+        headless:
+          type: boolean
+          description: 'Run browser in headless mode (default: true)'
+        timeout_ms:
+          type: number
+          description: 'Browser operation timeout in milliseconds (default: 30000)'
+        stealth:
+          type: object
+          description: Human-like behavior settings to avoid detection
+          properties:
+            enabled:
+              type: boolean
+              description: 'Master switch for all stealth features (default: true)'
+            random_delays:
+              type: boolean
+              description: 'Random delays between actions (default: true)'
+            human_typing:
+              type: boolean
+              description: 'Human-like typing patterns (default: true)'
+            mouse_movements:
+              type: boolean
+              description: 'Realistic mouse movements (default: true)'
+            typing_wpm_min:
+              type: number
+              description: 'Minimum typing speed in WPM (default: 160)'
+            typing_wpm_max:
+              type: number
+              description: 'Maximum typing speed in WPM (default: 240)'
+            delay_min_ms:
+              type: number
+              description: 'Minimum delay between actions in ms (default: 100)'
+            delay_max_ms:
+              type: number
+              description: 'Maximum delay between actions in ms (default: 400)'
+        viewport:
+          type: object
+          description: Browser viewport size
+          properties:
+            width:
+              type: number
+              description: 'Viewport width in pixels (default: 1920)'
+            height:
+              type: number
+              description: 'Viewport height in pixels (default: 1080)'
+  required:
+    - question
+example: |-
+  await notebooklm["ask_question"]({
+    question: "<question>",
+    session_id: "<session_id>",
+    notebook_id: "<notebook_id>"
+  });

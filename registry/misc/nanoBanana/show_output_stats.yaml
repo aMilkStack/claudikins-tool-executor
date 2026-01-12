@@ -1,0 +1,8 @@
+name: show_output_stats
+server: nanoBanana
+category: misc
+description: Show statistics about the output directory and recently generated images.
+inputSchema:
+  type: object
+  properties: {}
+example: await nanoBanana.show_output_stats({});

@@ -1,0 +1,12 @@
+name: think_about_collected_information
+server: serena
+category: code-nav
+description: |-
+  Think about the collected information and whether it is sufficient and relevant.
+  This tool should ALWAYS be called after you have completed a non-trivial sequence of searching steps like
+  find_symbol, find_referencing_symbols, search_files_for_pattern, read_file, etc.
+inputSchema:
+  type: object
+  properties: {}
+  title: applyArguments
+example: await serena.think_about_collected_information({});

@@ -1,0 +1,73 @@
+name: cleanup_data
+server: notebooklm
+category: knowledge
+description: >-
+  ULTRATHINK Deep Cleanup - Scans entire system for ALL NotebookLM MCP data files across 8 categories. Always runs in
+  deep mode, shows categorized preview before deletion.
+
+
+  ⚠️ CRITICAL: Close ALL Chrome/Chromium instances BEFORE running this tool! Open browsers can prevent cleanup and cause
+  issues.
+
+
+  Categories scanned:
+
+  1. Legacy Installation (notebooklm-mcp-nodejs) - Old paths with -nodejs suffix
+
+  2. Current Installation (notebooklm-mcp) - Active data, browser profiles, library
+
+  3. NPM/NPX Cache - Cached installations from npx
+
+  4. Claude CLI MCP Logs - MCP server logs from Claude CLI
+
+  5. Temporary Backups - Backup directories in system temp
+
+  6. Claude Projects Cache - Project-specific cache (optional)
+
+  7. Editor Logs (Cursor/VSCode) - MCP logs from code editors (optional)
+
+  8. Trash Files - Deleted notebooklm files in system trash (optional)
+
+
+  Works cross-platform (Linux, Windows, macOS). Safe by design: shows detailed preview before deletion, requires
+  explicit confirmation.
+
+
+  LIBRARY PRESERVATION: Set preserve_library=true to keep your notebook library.json file while cleaning everything
+  else.
+
+
+  RECOMMENDED WORKFLOW for fresh start:
+
+  1. Ask user to close ALL Chrome/Chromium instances
+
+  2. Run cleanup_data(confirm=false, preserve_library=true) to preview
+
+  3. Run cleanup_data(confirm=true, preserve_library=true) to execute
+
+  4. Run setup_auth or re_auth for fresh browser session
+
+
+  Use cases: Clean reinstall, troubleshooting auth issues, removing all traces before uninstall, cleaning old browser
+  sessions and installation data.
+inputSchema:
+  type: object
+  properties:
+    confirm:
+      type: boolean
+      description: >-
+        Confirmation flag. Tool shows preview first, then user confirms deletion. Set to true only after user has
+        reviewed the preview and explicitly confirmed.
+    preserve_library:
+      type: boolean
+      description: >-
+        Preserve library.json file during cleanup. Default: false. Set to true to keep your notebook library while
+        deleting everything else (browser data, caches, logs).
+      default: false
+  required:
+    - confirm
+example: |-
+  await notebooklm["cleanup_data"]({
+    confirm: true,
+    preserve_library: true
+  });

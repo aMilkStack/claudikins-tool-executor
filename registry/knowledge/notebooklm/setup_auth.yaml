@@ -1,0 +1,47 @@
+name: setup_auth
+server: notebooklm
+category: knowledge
+description: >-
+  Google authentication for NotebookLM access - opens a browser window for manual login to your Google account. Returns
+  immediately after opening the browser. You have up to 10 minutes to complete the login. Use 'get_health' tool
+  afterwards to verify authentication was saved successfully. Use this for first-time authentication or when auto-login
+  credentials are not available. For switching accounts or rate-limit workarounds, use 're_auth' tool instead.
+
+
+  TROUBLESHOOTING for persistent auth issues:
+
+  If setup_auth fails or you encounter browser/session issues:
+
+  1. Ask user to close ALL Chrome/Chromium instances
+
+  2. Run cleanup_data(confirm=true, preserve_library=true) to clean old data
+
+  3. Run setup_auth again for fresh start
+
+  This helps resolve conflicts from old browser sessions and installation data.
+inputSchema:
+  type: object
+  properties:
+    show_browser:
+      type: boolean
+      description: >-
+        Show browser window (simple version). Default: true for setup. For advanced control, use browser_options
+        instead.
+    browser_options:
+      type: object
+      description: Optional browser settings. Control visibility, timeouts, and stealth behavior.
+      properties:
+        show:
+          type: boolean
+          description: 'Show browser window (default: true for setup)'
+        headless:
+          type: boolean
+          description: 'Run browser in headless mode (default: false for setup)'
+        timeout_ms:
+          type: number
+          description: 'Browser operation timeout in milliseconds (default: 30000)'
+example: |-
+  await notebooklm["setup_auth"]({
+    show_browser: true,
+    browser_options: {}
+  });

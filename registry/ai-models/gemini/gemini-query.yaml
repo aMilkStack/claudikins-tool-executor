@@ -1,0 +1,37 @@
+name: gemini-query
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    prompt:
+      type: string
+      description: The prompt to send to Gemini
+    model:
+      type: string
+      enum:
+        - pro
+        - flash
+      default: pro
+      description: The Gemini model to use (pro or flash)
+    thinkingLevel:
+      type: string
+      enum:
+        - minimal
+        - low
+        - medium
+        - high
+      description: >-
+        Reasoning depth: minimal/low for fast responses, medium/high for complex tasks. Pro supports low/high only.
+        Flash supports all levels. Default is high.
+  required:
+    - prompt
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-query"]({
+    prompt: "<prompt>",
+    model: "<model>",
+    thinkingLevel: "<thinkingLevel>"
+  });

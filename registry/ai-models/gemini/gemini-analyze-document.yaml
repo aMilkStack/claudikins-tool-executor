@@ -1,0 +1,32 @@
+name: gemini-analyze-document
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    filePath:
+      type: string
+      description: Path to the document file (PDF, TXT, CSV, DOCX, etc.)
+    question:
+      type: string
+      description: Question about the document or task to perform (e.g., "Summarize this document", "Extract all dates mentioned")
+    mediaResolution:
+      type: string
+      enum:
+        - low
+        - medium
+        - high
+      default: medium
+      description: 'Resolution for processing: low (faster, less detail), medium (balanced), high (more detail, more tokens)'
+  required:
+    - filePath
+    - question
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-analyze-document"]({
+    filePath: "<filePath>",
+    question: "<question>",
+    mediaResolution: "<mediaResolution>"
+  });

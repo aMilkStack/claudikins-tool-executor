@@ -1,0 +1,18 @@
+name: gemini-end-image-edit
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    sessionId:
+      type: string
+      description: The session ID to close
+  required:
+    - sessionId
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-end-image-edit"]({
+    sessionId: "<sessionId>"
+  });

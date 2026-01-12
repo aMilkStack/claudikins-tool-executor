@@ -1,0 +1,28 @@
+name: gemini-youtube-summary
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    url:
+      type: string
+      description: YouTube video URL
+    style:
+      type: string
+      enum:
+        - brief
+        - detailed
+        - bullet-points
+        - chapters
+      default: brief
+      description: Summary style
+  required:
+    - url
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-youtube-summary"]({
+    url: "<url>",
+    style: "<style>"
+  });

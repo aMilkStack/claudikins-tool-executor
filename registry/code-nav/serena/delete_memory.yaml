@@ -1,0 +1,20 @@
+name: delete_memory
+server: serena
+category: code-nav
+description: |-
+  Delete a memory file. Should only happen if a user asks for it explicitly,
+  for example by saying that the information retrieved from a memory file is no longer correct
+  or no longer relevant for the project.
+inputSchema:
+  type: object
+  properties:
+    memory_file_name:
+      title: Memory File Name
+      type: string
+  required:
+    - memory_file_name
+  title: applyArguments
+example: |-
+  await serena["delete_memory"]({
+    memory_file_name: "<memory_file_name>"
+  });

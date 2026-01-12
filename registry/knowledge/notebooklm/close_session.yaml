@@ -1,0 +1,16 @@
+name: close_session
+server: notebooklm
+category: knowledge
+description: Close a specific session by session ID. Ask before closing if the user might still need it.
+inputSchema:
+  type: object
+  properties:
+    session_id:
+      type: string
+      description: The session ID to close
+  required:
+    - session_id
+example: |-
+  await notebooklm["close_session"]({
+    session_id: "<session_id>"
+  });

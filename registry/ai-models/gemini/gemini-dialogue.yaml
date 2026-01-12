@@ -1,0 +1,101 @@
+name: gemini-dialogue
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    script:
+      type: string
+      description: 'The dialogue script with speaker names. Format: "Speaker1: line\nSpeaker2: line"'
+    speaker1:
+      type: string
+      description: Name of first speaker as used in script
+    speaker1Voice:
+      type: string
+      enum:
+        - Zephyr
+        - Puck
+        - Charon
+        - Kore
+        - Fenrir
+        - Leda
+        - Orus
+        - Aoede
+        - Callirrhoe
+        - Autonoe
+        - Enceladus
+        - Iapetus
+        - Umbriel
+        - Algieba
+        - Despina
+        - Erinome
+        - Algenib
+        - Rasalgethi
+        - Laomedeia
+        - Achernar
+        - Alnilam
+        - Schedar
+        - Gacrux
+        - Pulcherrima
+        - Achird
+        - Zubenelgenubi
+        - Vindemiatrix
+        - Sadachbia
+        - Sadaltager
+        - Sulafat
+      default: Kore
+      description: Voice for speaker 1
+    speaker2:
+      type: string
+      description: Name of second speaker as used in script
+    speaker2Voice:
+      type: string
+      enum:
+        - Zephyr
+        - Puck
+        - Charon
+        - Kore
+        - Fenrir
+        - Leda
+        - Orus
+        - Aoede
+        - Callirrhoe
+        - Autonoe
+        - Enceladus
+        - Iapetus
+        - Umbriel
+        - Algieba
+        - Despina
+        - Erinome
+        - Algenib
+        - Rasalgethi
+        - Laomedeia
+        - Achernar
+        - Alnilam
+        - Schedar
+        - Gacrux
+        - Pulcherrima
+        - Achird
+        - Zubenelgenubi
+        - Vindemiatrix
+        - Sadachbia
+        - Sadaltager
+        - Sulafat
+      default: Puck
+      description: Voice for speaker 2
+    style:
+      type: string
+      description: Style instructions for the dialogue (e.g., "Make Speaker1 sound tired, Speaker2 excited")
+  required:
+    - script
+    - speaker1
+    - speaker2
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-dialogue"]({
+    script: "<script>",
+    speaker1: "<speaker1>",
+    speaker1Voice: "<speaker1Voice>"
+  });

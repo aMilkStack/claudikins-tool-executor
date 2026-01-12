@@ -1,0 +1,49 @@
+name: re_auth
+server: notebooklm
+category: knowledge
+description: |-
+  Switch to a different Google account or re-authenticate. Use this when:
+  - NotebookLM rate limit is reached (50 queries/day for free accounts)
+  - You want to switch to a different Google account
+  - Authentication is broken and needs a fresh start
+
+  This will:
+  1. Close all active browser sessions
+  2. Delete all saved authentication data (cookies, Chrome profile)
+  3. Open browser for fresh Google login
+
+  After completion, use 'get_health' to verify authentication.
+
+  TROUBLESHOOTING for persistent auth issues:
+  If re_auth fails repeatedly:
+  1. Ask user to close ALL Chrome/Chromium instances
+  2. Run cleanup_data(confirm=false, preserve_library=true) to preview old files
+  3. Run cleanup_data(confirm=true, preserve_library=true) to clean everything except library
+  4. Run re_auth again for completely fresh start
+  This removes old installation data and browser sessions that can cause conflicts.
+inputSchema:
+  type: object
+  properties:
+    show_browser:
+      type: boolean
+      description: >-
+        Show browser window (simple version). Default: true for re-auth. For advanced control, use browser_options
+        instead.
+    browser_options:
+      type: object
+      description: Optional browser settings. Control visibility, timeouts, and stealth behavior.
+      properties:
+        show:
+          type: boolean
+          description: 'Show browser window (default: true for re-auth)'
+        headless:
+          type: boolean
+          description: 'Run browser in headless mode (default: false for re-auth)'
+        timeout_ms:
+          type: number
+          description: 'Browser operation timeout in milliseconds (default: 30000)'
+example: |-
+  await notebooklm["re_auth"]({
+    show_browser: true,
+    browser_options: {}
+  });

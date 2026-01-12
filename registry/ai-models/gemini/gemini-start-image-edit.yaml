@@ -1,0 +1,47 @@
+name: gemini-start-image-edit
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    prompt:
+      type: string
+      description: Initial prompt to generate the base image to edit
+    aspectRatio:
+      type: string
+      enum:
+        - '1:1'
+        - '2:3'
+        - '3:2'
+        - '3:4'
+        - '4:3'
+        - '4:5'
+        - '5:4'
+        - '9:16'
+        - '16:9'
+        - '21:9'
+      default: '1:1'
+      description: Aspect ratio for the image
+    imageSize:
+      type: string
+      enum:
+        - 1K
+        - 2K
+        - 4K
+      default: 2K
+      description: 'Resolution: 1K (fast), 2K (balanced), 4K (highest quality)'
+    useGoogleSearch:
+      type: boolean
+      default: false
+      description: Ground the image in real-world info via Google Search
+  required:
+    - prompt
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-start-image-edit"]({
+    prompt: "<prompt>",
+    aspectRatio: "<aspectRatio>",
+    imageSize: "<imageSize>"
+  });

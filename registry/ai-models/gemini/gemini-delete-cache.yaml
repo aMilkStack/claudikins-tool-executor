@@ -1,0 +1,18 @@
+name: gemini-delete-cache
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    cacheName:
+      type: string
+      description: The cache name to delete
+  required:
+    - cacheName
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-delete-cache"]({
+    cacheName: "<cacheName>"
+  });

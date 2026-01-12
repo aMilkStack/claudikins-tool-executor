@@ -1,0 +1,54 @@
+name: gemini-analyze-image
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    imagePath:
+      type: string
+      description: Path to image file. Supports JPEG, PNG, WebP, HEIC, HEIF, GIF
+    query:
+      type: string
+      description: >-
+        Specific question about the image (e.g., "What objects are in this image?", "Count the people"). Default:
+        "Analyze this image in detail."
+    detectObjects:
+      type: boolean
+      default: true
+      description: 'Enable object detection with bounding boxes (returns box_2d coordinates). Default: true'
+    model:
+      type: string
+      enum:
+        - pro
+        - flash
+      default: flash
+      description: 'Model to use: pro (more accurate) or flash (faster). Default: flash'
+    thinkingLevel:
+      type: string
+      enum:
+        - minimal
+        - low
+        - medium
+        - high
+      description: >-
+        Reasoning depth: minimal/low for fast responses, medium/high for complex analysis. Pro supports low/high only.
+        Flash supports all levels. Default: high
+    mediaResolution:
+      type: string
+      enum:
+        - low
+        - medium
+        - high
+      default: medium
+      description: 'Resolution for processing: low (faster), medium (balanced), high (more detail). Default: medium'
+  required:
+    - imagePath
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-analyze-image"]({
+    imagePath: "<imagePath>",
+    query: "<query>",
+    detectObjects: true
+  });

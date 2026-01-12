@@ -1,0 +1,9 @@
+name: think_about_whether_you_are_done
+server: serena
+category: code-nav
+description: Whenever you feel that you are done with what the user has asked for, it is important to call this tool.
+inputSchema:
+  type: object
+  properties: {}
+  title: applyArguments
+example: await serena.think_about_whether_you_are_done({});

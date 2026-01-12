@@ -1,0 +1,8 @@
+name: get_library_stats
+server: notebooklm
+category: knowledge
+description: Get statistics about your notebook library (total notebooks, usage, etc.)
+inputSchema:
+  type: object
+  properties: {}
+example: await notebooklm.get_library_stats({});

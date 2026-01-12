@@ -1,0 +1,33 @@
+name: rename_symbol
+server: serena
+category: code-nav
+description: |-
+  Renames the symbol with the given `name_path` to `new_name` throughout the entire codebase.
+  Note: for languages with method overloading, like Java, name_path may have to include a method's
+  signature to uniquely identify a method. Returns result summary indicating success or failure.
+inputSchema:
+  type: object
+  properties:
+    name_path:
+      title: Name Path
+      type: string
+      description: Name path of the symbol to rename (definitions in the `find_symbol` tool apply).
+    relative_path:
+      title: Relative Path
+      type: string
+      description: The relative path to the file containing the symbol to rename.
+    new_name:
+      title: New Name
+      type: string
+      description: The new name for the symbol.
+  required:
+    - name_path
+    - relative_path
+    - new_name
+  title: applyArguments
+example: |-
+  await serena["rename_symbol"]({
+    name_path: "<name_path>",
+    relative_path: "<relative_path>",
+    new_name: "<new_name>"
+  });

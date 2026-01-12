@@ -1,0 +1,30 @@
+name: gemini-youtube
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    url:
+      type: string
+      description: YouTube video URL (e.g., https://www.youtube.com/watch?v=...)
+    question:
+      type: string
+      description: Question about the video or task to perform (e.g., "Summarize this video", "What happens at 2:30?")
+    startTime:
+      type: string
+      description: Start time for analysis (e.g., "1m30s", "90", "1:30"). Optional.
+    endTime:
+      type: string
+      description: End time for analysis (e.g., "5m00s", "300", "5:00"). Optional.
+  required:
+    - url
+    - question
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-youtube"]({
+    url: "<url>",
+    question: "<question>",
+    startTime: "<startTime>"
+  });

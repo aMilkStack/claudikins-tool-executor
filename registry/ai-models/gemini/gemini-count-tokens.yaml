@@ -1,0 +1,26 @@
+name: gemini-count-tokens
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    content:
+      type: string
+      description: The text content to count tokens for
+    model:
+      type: string
+      enum:
+        - pro
+        - flash
+      default: flash
+      description: Which model to use for counting (affects tokenization)
+  required:
+    - content
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-count-tokens"]({
+    content: "<content>",
+    model: "<model>"
+  });

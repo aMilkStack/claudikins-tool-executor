@@ -1,0 +1,18 @@
+name: search_notebooks
+server: notebooklm
+category: knowledge
+description: >-
+  Search library by query (name, description, topics, tags). Use to propose relevant notebooks for the task and then ask
+  which to use.
+inputSchema:
+  type: object
+  properties:
+    query:
+      type: string
+      description: Search query
+  required:
+    - query
+example: |-
+  await notebooklm["search_notebooks"]({
+    query: "<query>"
+  });

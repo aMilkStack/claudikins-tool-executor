@@ -1,0 +1,27 @@
+name: gemini-compare-urls
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    url1:
+      type: string
+      description: First URL to compare
+    url2:
+      type: string
+      description: Second URL to compare
+    aspect:
+      type: string
+      description: Specific aspect to compare (e.g., "pricing", "features", "ingredients")
+  required:
+    - url1
+    - url2
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-compare-urls"]({
+    url1: "<url1>",
+    url2: "<url2>",
+    aspect: "<aspect>"
+  });

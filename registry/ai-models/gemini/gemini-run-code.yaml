@@ -1,0 +1,22 @@
+name: gemini-run-code
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    prompt:
+      type: string
+      description: What you want Gemini to compute or analyze. Gemini will write Python code and execute it.
+    data:
+      type: string
+      description: Optional CSV or text data to analyze. Will be passed to the code environment.
+  required:
+    - prompt
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-run-code"]({
+    prompt: "<prompt>",
+    data: "<data>"
+  });

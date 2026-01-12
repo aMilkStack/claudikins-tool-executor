@@ -1,0 +1,15 @@
+name: get_health
+server: notebooklm
+category: knowledge
+description: >-
+  Get server health status including authentication state, active sessions, and configuration. Use this to verify the
+  server is ready before starting research workflows.
+
+
+  If authenticated=false and having persistent issues:
+
+  Consider running cleanup_data(preserve_library=true) + setup_auth for fresh start with clean browser session.
+inputSchema:
+  type: object
+  properties: {}
+example: await notebooklm.get_health({});

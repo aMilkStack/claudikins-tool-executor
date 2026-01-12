@@ -1,0 +1,18 @@
+name: activate_project
+server: serena
+category: code-nav
+description: Activates the project with the given name or path.
+inputSchema:
+  type: object
+  properties:
+    project:
+      title: Project
+      type: string
+      description: The name of a registered project to activate or a path to a project directory.
+  required:
+    - project
+  title: applyArguments
+example: |-
+  await serena["activate_project"]({
+    project: "<project>"
+  });

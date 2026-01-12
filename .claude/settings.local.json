@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebSearch",
+      "Skill(superpowers:finishing-a-development-branch)",
+      "mcp__tool-executor__execute_code"
+    ]
+  },
+  "outputStyle": "Explanatory",
+  "spinnerTipsEnabled": false
+}

@@ -1,0 +1,26 @@
+name: read_memory
+server: serena
+category: code-nav
+description: |-
+  Read the content of a memory file. This tool should only be used if the information
+  is relevant to the current task. You can infer whether the information
+  is relevant from the memory file name.
+  You should not read the same memory file multiple times in the same conversation.
+inputSchema:
+  type: object
+  properties:
+    memory_file_name:
+      title: Memory File Name
+      type: string
+    max_answer_chars:
+      default: -1
+      title: Max Answer Chars
+      type: integer
+  required:
+    - memory_file_name
+  title: applyArguments
+example: |-
+  await serena["read_memory"]({
+    memory_file_name: "<memory_file_name>",
+    max_answer_chars: 0
+  });

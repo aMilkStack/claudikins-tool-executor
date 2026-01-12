@@ -1,0 +1,16 @@
+name: get_notebook
+server: notebooklm
+category: knowledge
+description: Get detailed information about a specific notebook by ID
+inputSchema:
+  type: object
+  properties:
+    id:
+      type: string
+      description: The notebook ID
+  required:
+    - id
+example: |-
+  await notebooklm["get_notebook"]({
+    id: "<id>"
+  });

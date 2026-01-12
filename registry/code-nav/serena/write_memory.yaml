@@ -1,0 +1,31 @@
+name: write_memory
+server: serena
+category: code-nav
+description: >-
+  Write some information (utf-8-encoded) about this project that can be useful for future tasks to a memory in md
+  format.
+
+  The memory name should be meaningful.
+inputSchema:
+  type: object
+  properties:
+    memory_file_name:
+      title: Memory File Name
+      type: string
+    content:
+      title: Content
+      type: string
+    max_answer_chars:
+      default: -1
+      title: Max Answer Chars
+      type: integer
+  required:
+    - memory_file_name
+    - content
+  title: applyArguments
+example: |-
+  await serena["write_memory"]({
+    memory_file_name: "<memory_file_name>",
+    content: "<content>",
+    max_answer_chars: 0
+  });

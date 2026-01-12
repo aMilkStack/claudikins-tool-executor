@@ -1,0 +1,108 @@
+name: call-actor
+server: apify
+category: web
+description: >-
+  Call any Actor from the Apify Store using a mandatory two-step workflow.
+
+  This ensures you first get the Actor’s input schema and details before executing it safely.
+
+
+  There are two ways to run Actors:
+
+  1. Dedicated Actor tools (e.g., apify-slash-rag-web-browser): These are pre-configured tools, offering a simpler and
+  more direct experience.
+
+  2. Generic call-actor tool (call-actor): Use this when a dedicated tool is not available or when you want to run any
+  Actor dynamically. This tool is especially useful if you do not want to add specific tools or your client does not
+  support dynamic tool registration.
+
+
+  **Important:**
+
+
+  Typically, a successful run returns a `datasetId` (the Actor's output stored as an Apify dataset) and a short preview
+  of items.
+
+  To fetch the full output, use the get-actor-output tool with the `datasetId`.
+
+
+  USAGE:
+
+  - Always use dedicated tools when available (e.g., apify-slash-rag-web-browser)
+
+  - Use the generic call-actor tool only if a dedicated tool does not exist for your Actor.
+
+
+  MANDATORY TWO-STEP-WORKFLOW:
+
+  Step 1: Get Actor Info (step="info", default)
+
+  - First call this tool with step="info" to get Actor details and input schema
+
+  - This returns the Actor description, documentation, and required input schema
+
+  - You MUST do this step first - it's required to understand how to call the Actor
+
+
+  Step 2: Call Actor (step="call")
+
+  - Only after step 1, call this tool again with step="call" and proper input based on the schema
+
+  - This runs the Actor. It will create an output as an Apify dataset (with datasetId).
+
+  - This step returns a dataset preview, typically JSON-formatted tabular data.
+
+
+  EXAMPLES:
+
+  - user_input: Get instagram posts using apify/instagram-scraper
+inputSchema:
+  type: object
+  properties:
+    actor:
+      type: string
+      description: The name of the Actor to call. For example, "apify/rag-web-browser".
+    step:
+      type: string
+      enum:
+        - info
+        - call
+      description: >-
+        Step to perform: "info" to get Actor details and input schema (required first step), "call" to run the Actor
+        (only after getting info).
+    input:
+      description: >-
+        The input JSON to pass to the Actor. For example, {"query": "apify", "maxResults": 5}. Must be used only when
+        step="call".
+      type: object
+      properties: {}
+      additionalProperties: {}
+    callOptions:
+      description: Optional call options for the Actor run configuration.
+      type: object
+      properties:
+        memory:
+          description: >-
+            Memory allocation for the Actor in MB. Must be a power of 2 (e.g., 128, 256, 512, 1024, 2048, 4096, 8192,
+            16384, 32768). Minimum: 128 MB, Maximum: 32768 MB (32 GB).
+          type: number
+          minimum: 128
+          maximum: 32768
+        timeout:
+          description: >-
+            Maximum runtime for the Actor in seconds. After this time elapses, the Actor will be automatically
+            terminated. Use 0 for infinite timeout (no time limit). Minimum: 0 seconds (infinite).
+          type: number
+          minimum: 0
+      additionalProperties: false
+  required:
+    - actor
+    - step
+  $schema: https://json-schema.org/draft/2020-12/schema
+  additionalProperties: false
+example: |-
+  await apify["call-actor"]({
+    actor: "<actor>",
+    step: "<step>",
+    input: {}
+  });

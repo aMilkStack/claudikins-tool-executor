@@ -1,0 +1,40 @@
+name: list_dir
+server: serena
+category: code-nav
+description: >-
+  Lists files and directories in the given directory (optionally with recursion). Returns a JSON object with the names
+  of directories and files within the given directory.
+inputSchema:
+  type: object
+  properties:
+    relative_path:
+      title: Relative Path
+      type: string
+      description: The relative path to the directory to list; pass "." to scan the project root.
+    recursive:
+      title: Recursive
+      type: boolean
+      description: Whether to scan subdirectories recursively.
+    skip_ignored_files:
+      default: false
+      title: Skip Ignored Files
+      type: boolean
+      description: Whether to skip files and directories that are ignored.
+    max_answer_chars:
+      default: -1
+      title: Max Answer Chars
+      type: integer
+      description: |-
+        If the output is longer than this number of characters,
+        no content will be returned. -1 means the default value from the config will be used.
+        Don't adjust unless there is really no other way to get the content required for the task.
+  required:
+    - relative_path
+    - recursive
+  title: applyArguments
+example: |-
+  await serena["list_dir"]({
+    relative_path: "<relative_path>",
+    recursive: true,
+    skip_ignored_files: true
+  });

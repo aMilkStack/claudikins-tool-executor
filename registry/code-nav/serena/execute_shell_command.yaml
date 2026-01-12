@@ -1,0 +1,48 @@
+name: execute_shell_command
+server: serena
+category: code-nav
+description: |-
+  Execute a shell command and return its output. If there is a memory about suggested commands, read that first.
+  Never execute unsafe shell commands!
+  IMPORTANT: Do not use this tool to start
+    * long-running processes (e.g. servers) that are not intended to terminate quickly,
+    * processes that require user interaction. Returns a JSON object containing the command's stdout and optionally stderr output.
+inputSchema:
+  type: object
+  properties:
+    command:
+      title: Command
+      type: string
+      description: The shell command to execute.
+    cwd:
+      anyOf:
+        - type: string
+        - type: 'null'
+      default: null
+      title: Cwd
+      description: The working directory to execute the command in. If None, the project root will be used.
+    capture_stderr:
+      default: true
+      title: Capture Stderr
+      type: boolean
+      description: Whether to capture and return stderr output.
+    max_answer_chars:
+      default: -1
+      title: Max Answer Chars
+      type: integer
+      description: >-
+        If the output is longer than this number of characters,
+
+        no content will be returned. -1 means using the default value, don't adjust unless there is no other way to get
+        the content
+
+        required for the task.
+  required:
+    - command
+  title: applyArguments
+example: |-
+  await serena["execute_shell_command"]({
+    command: "<command>",
+    cwd: "<cwd>",
+    capture_stderr: true
+  });

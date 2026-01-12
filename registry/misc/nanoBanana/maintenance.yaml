@@ -1,0 +1,48 @@
+name: maintenance
+server: nanoBanana
+category: misc
+description: |-
+  Perform maintenance operations following workflows.md patterns.
+
+  Available operations:
+  - cleanup_expired: Remove expired Files API entries from database
+  - cleanup_local: Clean old local files based on age/LRU
+  - check_quota: Check Files API storage usage vs. ~20GB budget
+  - database_hygiene: Clean up database inconsistencies
+  - full_cleanup: Run all cleanup operations in sequence
+inputSchema:
+  type: object
+  properties:
+    operation:
+      description: >-
+        Maintenance operation to perform: 'cleanup_expired', 'cleanup_local', 'check_quota', 'database_hygiene',
+        'full_cleanup'
+      type: string
+    dry_run:
+      default: true
+      description: If true, only report what would be done without making changes
+      type: boolean
+    max_age_hours:
+      anyOf:
+        - maximum: 8760
+          minimum: 1
+          type: integer
+        - type: 'null'
+      default: null
+      description: 'For local cleanup: maximum age in hours (default: 168 = 1 week)'
+    keep_count:
+      anyOf:
+        - maximum: 1000
+          minimum: 1
+          type: integer
+        - type: 'null'
+      default: null
+      description: 'For local cleanup: minimum number of recent files to keep'
+  required:
+    - operation
+example: |-
+  await nanoBanana["maintenance"]({
+    operation: "<operation>",
+    dry_run: true,
+    max_age_hours: "<max_age_hours>"
+  });

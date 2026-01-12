@@ -1,0 +1,28 @@
+name: gemini-summarize-pdf
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    filePath:
+      type: string
+      description: Path to the PDF file
+    style:
+      type: string
+      enum:
+        - brief
+        - detailed
+        - outline
+        - key-points
+      default: brief
+      description: Summary style
+  required:
+    - filePath
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-summarize-pdf"]({
+    filePath: "<filePath>",
+    style: "<style>"
+  });

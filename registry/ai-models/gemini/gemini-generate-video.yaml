@@ -1,0 +1,30 @@
+name: gemini-generate-video
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    prompt:
+      type: string
+      description: Description of the video to generate (be detailed!)
+    aspectRatio:
+      type: string
+      enum:
+        - '16:9'
+        - '9:16'
+      default: '16:9'
+      description: Aspect ratio (16:9 for landscape, 9:16 for portrait/mobile)
+    negativePrompt:
+      type: string
+      description: Things to avoid in the video (e.g., "text, watermarks, blurry")
+  required:
+    - prompt
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-generate-video"]({
+    prompt: "<prompt>",
+    aspectRatio: "<aspectRatio>",
+    negativePrompt: "<negativePrompt>"
+  });

@@ -1,0 +1,66 @@
+name: replace_content
+server: serena
+category: code-nav
+description: |-
+  Replaces one or more occurrences of a given pattern in a file with new content.
+
+  This is the preferred way to replace content in a file whenever the symbol-level
+  tools are not appropriate.
+
+  VERY IMPORTANT: The "regex" mode allows very large sections of code to be replaced without fully quoting them!
+  Use a regex of the form "beginning.*?end-of-text-to-be-replaced" to be faster and more economical!
+  ALWAYS try to use wildcards to avoid specifying the exact content to be replaced,
+  especially if it spans several lines. Note that you cannot make mistakes, because if the regex should match
+  multiple occurrences while you disabled `allow_multiple_occurrences`, an error will be returned, and you can retry
+  with a revised regex.
+  Therefore, using regex mode with suitable wildcards is usually the best choice!.
+inputSchema:
+  type: object
+  properties:
+    relative_path:
+      title: Relative Path
+      type: string
+      description: The relative path to the file.
+    needle:
+      title: Needle
+      type: string
+      description: |-
+        The string or regex pattern to search for.
+        If `mode` is "literal", this string will be matched exactly.
+        If `mode` is "regex", this string will be treated as a regular expression (syntax of Python's `re` module,
+        with flags DOTALL and MULTILINE enabled).
+    repl:
+      title: Repl
+      type: string
+      description: |-
+        The replacement string (verbatim).
+        If mode is "regex", the string can contain backreferences to matched groups in the needle regex,
+        specified using the syntax $!1, $!2, etc. for groups 1, 2, etc.
+    mode:
+      enum:
+        - literal
+        - regex
+      title: Mode
+      type: string
+      description: Either "literal" or "regex", specifying how the `needle` parameter is to be interpreted.
+    allow_multiple_occurrences:
+      default: false
+      title: Allow Multiple Occurrences
+      type: boolean
+      description: |-
+        If True, the regex may match multiple occurrences in the file
+        and all of them will be replaced.
+        If this is set to False and the regex matches multiple occurrences, an error will be returned
+        (and you may retry with a revised, more specific regex).
+  required:
+    - relative_path
+    - needle
+    - repl
+    - mode
+  title: applyArguments
+example: |-
+  await serena["replace_content"]({
+    relative_path: "<relative_path>",
+    needle: "<needle>",
+    repl: "<repl>"
+  });

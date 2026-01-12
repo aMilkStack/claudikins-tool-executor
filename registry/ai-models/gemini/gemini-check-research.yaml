@@ -1,0 +1,18 @@
+name: gemini-check-research
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    researchId:
+      type: string
+      description: The research ID returned from gemini-deep-research
+  required:
+    - researchId
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-check-research"]({
+    researchId: "<researchId>"
+  });

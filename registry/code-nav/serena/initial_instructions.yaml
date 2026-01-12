@@ -1,0 +1,12 @@
+name: initial_instructions
+server: serena
+category: code-nav
+description: |-
+  Provides the 'Serena Instructions Manual', which contains essential information on how to use the Serena toolbox.
+  IMPORTANT: If you have not yet read the manual, call this tool immediately after you are given your task by the user,
+  as it will critically inform you!.
+inputSchema:
+  type: object
+  properties: {}
+  title: applyArguments
+example: await serena.initial_instructions({});

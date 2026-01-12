@@ -1,0 +1,16 @@
+name: get_component_examples
+server: shadcn
+category: ui
+description: Get usage examples for a specific shadcn/ui component
+inputSchema:
+  type: object
+  properties:
+    componentName:
+      type: string
+      description: Name of the shadcn/ui component (e.g., "accordion", "button")
+  required:
+    - componentName
+example: |-
+  await shadcn["get_component_examples"]({
+    componentName: "<componentName>"
+  });

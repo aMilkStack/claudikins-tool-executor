@@ -1,0 +1,74 @@
+name: search-apify-docs
+server: apify
+category: web
+description: |-
+  Search Apify and Crawlee documentation using full-text search.
+
+  You must explicitly select which documentation source to search using the docSource parameter:
+
+  • docSource="apify" - Apify:
+    Apify Platform documentation including: Platform features, SDKs (JS, Python), CLI, REST API, Academy (web scraping fundamentals), Actor development and deployment
+
+  • docSource="crawlee-js" - Crawlee (JavaScript):
+    Crawlee is a web scraping library for JavaScript. It handles blocking, crawling, proxies, and browsers for you.
+
+  • docSource="crawlee-py" - Crawlee (Python):
+    Crawlee is a web scraping library for Python. It handles blocking, crawling, proxies, and browsers for you.
+
+  The results will include the URL of the documentation page (which may include an anchor),
+  and a limited piece of content that matches the search query.
+
+  Fetch the full content of the document using the fetch-apify-docs tool by providing the URL.
+inputSchema:
+  type: object
+  properties:
+    docSource:
+      default: apify
+      description: |-
+        Documentation source to search. Defaults to "apify".
+        • "apify" - Apify
+        • "crawlee-js" - Crawlee (JavaScript)
+        • "crawlee-py" - Crawlee (Python)
+      type: string
+      enum:
+        - apify
+        - crawlee-js
+        - crawlee-py
+    query:
+      type: string
+      minLength: 1
+      description: |-
+        Algolia full-text search query to find relevant documentation pages.
+        Use only keywords, do not use full sentences or questions.
+        For example, "standby actor" will return documentation pages that contain the words "standby" and "actor".
+    limit:
+      default: 5
+      description: >-
+        Maximum number of search results to return. Defaults to 5. Maximum is 20.
+
+        You can increase this limit if you need more results, but keep in mind that the search results are limited to
+        the most relevant pages.
+      type: number
+      minimum: 1
+      maximum: 20
+    offset:
+      default: 0
+      description: >-
+        Offset for the search results. Defaults to 0.
+
+        Use this to paginate through the search results. For example, if you want to get the next 5 results, set the
+        offset to 5 and limit to 5.
+      type: number
+  required:
+    - docSource
+    - query
+    - limit
+    - offset
+  $schema: https://json-schema.org/draft/2020-12/schema
+  additionalProperties: false
+example: |-
+  await apify["search-apify-docs"]({
+    docSource: "<docSource>",
+    query: "<query>",
+    limit: 0
+  });

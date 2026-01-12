@@ -1,0 +1,36 @@
+name: gemini-summarize
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    content:
+      type: string
+      description: The content to summarize
+    length:
+      type: string
+      enum:
+        - brief
+        - moderate
+        - detailed
+      default: moderate
+      description: The desired summary length
+    format:
+      type: string
+      enum:
+        - paragraph
+        - bullet-points
+        - outline
+      default: paragraph
+      description: The output format
+  required:
+    - content
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-summarize"]({
+    content: "<content>",
+    length: "<length>",
+    format: "<format>"
+  });

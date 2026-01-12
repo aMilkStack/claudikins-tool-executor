@@ -1,0 +1,29 @@
+name: gemini-image-prompt
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    description:
+      type: string
+      description: Description of the image to generate a prompt for
+    style:
+      type: string
+      description: The artistic style for the image
+    mood:
+      type: string
+      description: The mood or atmosphere of the image
+    details:
+      type: string
+      description: Additional details to include
+  required:
+    - description
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-image-prompt"]({
+    description: "<description>",
+    style: "<style>",
+    mood: "<mood>"
+  });

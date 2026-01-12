@@ -1,0 +1,23 @@
+name: gemini-query-cache
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    cacheName:
+      type: string
+      description: The cache name or display name
+    question:
+      type: string
+      description: Question to ask about the cached content
+  required:
+    - cacheName
+    - question
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-query-cache"]({
+    cacheName: "<cacheName>",
+    question: "<question>"
+  });

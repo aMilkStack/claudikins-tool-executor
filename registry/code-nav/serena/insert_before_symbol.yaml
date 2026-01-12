@@ -1,0 +1,33 @@
+name: insert_before_symbol
+server: serena
+category: code-nav
+description: |-
+  Inserts the given content before the beginning of the definition of the given symbol (via the symbol's location).
+  A typical use case is to insert a new class, function, method, field or variable assignment; or
+  a new import statement before the first symbol in the file.
+inputSchema:
+  type: object
+  properties:
+    name_path:
+      title: Name Path
+      type: string
+      description: Name path of the symbol before which to insert content (definitions in the `find_symbol` tool apply).
+    relative_path:
+      title: Relative Path
+      type: string
+      description: The relative path to the file containing the symbol.
+    body:
+      title: Body
+      type: string
+      description: The body/content to be inserted before the line in which the referenced symbol is defined.
+  required:
+    - name_path
+    - relative_path
+    - body
+  title: applyArguments
+example: |-
+  await serena["insert_before_symbol"]({
+    name_path: "<name_path>",
+    relative_path: "<relative_path>",
+    body: "<body>"
+  });

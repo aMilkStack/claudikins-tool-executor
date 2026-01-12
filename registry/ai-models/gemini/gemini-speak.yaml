@@ -1,0 +1,58 @@
+name: gemini-speak
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    text:
+      type: string
+      description: The text to convert to speech
+    voice:
+      type: string
+      enum:
+        - Zephyr
+        - Puck
+        - Charon
+        - Kore
+        - Fenrir
+        - Leda
+        - Orus
+        - Aoede
+        - Callirrhoe
+        - Autonoe
+        - Enceladus
+        - Iapetus
+        - Umbriel
+        - Algieba
+        - Despina
+        - Erinome
+        - Algenib
+        - Rasalgethi
+        - Laomedeia
+        - Achernar
+        - Alnilam
+        - Schedar
+        - Gacrux
+        - Pulcherrima
+        - Achird
+        - Zubenelgenubi
+        - Vindemiatrix
+        - Sadachbia
+        - Sadaltager
+        - Sulafat
+      default: Kore
+      description: 'Voice to use. Popular: Kore (firm), Puck (upbeat), Zephyr (bright), Charon (informative), Aoede (breezy)'
+    style:
+      type: string
+      description: Style instructions (e.g., "cheerfully", "in a spooky whisper", "with excitement")
+  required:
+    - text
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-speak"]({
+    text: "<text>",
+    voice: "<voice>",
+    style: "<style>"
+  });

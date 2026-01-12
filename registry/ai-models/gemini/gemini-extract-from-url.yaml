@@ -1,0 +1,34 @@
+name: gemini-extract-from-url
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    url:
+      type: string
+      description: URL to extract data from
+    dataType:
+      type: string
+      enum:
+        - prices
+        - contacts
+        - dates
+        - products
+        - links
+        - custom
+      description: Type of data to extract
+    customFields:
+      type: string
+      description: 'For custom extraction: comma-separated fields to extract'
+  required:
+    - url
+    - dataType
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-extract-from-url"]({
+    url: "<url>",
+    dataType: "<dataType>",
+    customFields: "<customFields>"
+  });

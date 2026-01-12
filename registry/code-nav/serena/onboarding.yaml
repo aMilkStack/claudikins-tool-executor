@@ -1,0 +1,13 @@
+name: onboarding
+server: serena
+category: code-nav
+description: >-
+  Call this tool if onboarding was not performed yet.
+
+  You will call this tool at most once per conversation. Returns instructions on how to create the onboarding
+  information.
+inputSchema:
+  type: object
+  properties: {}
+  title: applyArguments
+example: await serena.onboarding({});

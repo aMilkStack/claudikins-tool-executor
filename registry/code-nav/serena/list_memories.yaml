@@ -1,0 +1,9 @@
+name: list_memories
+server: serena
+category: code-nav
+description: List available memories. Any memory can be read using the `read_memory` tool.
+inputSchema:
+  type: object
+  properties: {}
+  title: applyArguments
+example: await serena.list_memories({});

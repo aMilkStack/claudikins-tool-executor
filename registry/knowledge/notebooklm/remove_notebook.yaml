@@ -1,0 +1,30 @@
+name: remove_notebook
+server: notebooklm
+category: knowledge
+description: |-
+  Dangerous — requires explicit user confirmation.
+
+  ## Confirmation Workflow
+  1) User requests removal ("Remove the React notebook")
+  2) Look up full name to confirm
+  3) Ask: "Remove '[notebook_name]' from your library? (Does not delete the actual NotebookLM notebook)"
+  4) Only on explicit "Yes" → call remove_notebook
+
+  Never remove without permission or based on assumptions.
+
+  Example:
+  User: "Delete the old React notebook"
+  You: "Remove 'React Best Practices' from your library?"
+  User: "Yes" → call remove_notebook
+inputSchema:
+  type: object
+  properties:
+    id:
+      type: string
+      description: The notebook ID to remove
+  required:
+    - id
+example: |-
+  await notebooklm["remove_notebook"]({
+    id: "<id>"
+  });

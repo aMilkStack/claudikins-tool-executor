@@ -1,0 +1,23 @@
+name: gemini-search
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    query:
+      type: string
+      description: The question or topic to search for. Gemini will use Google Search to find current information.
+    returnCitations:
+      type: boolean
+      default: true
+      description: Include inline citations with source URLs
+  required:
+    - query
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-search"]({
+    query: "<query>",
+    returnCitations: true
+  });

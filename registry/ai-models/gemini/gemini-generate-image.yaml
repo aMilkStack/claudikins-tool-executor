@@ -1,0 +1,50 @@
+name: gemini-generate-image
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    prompt:
+      type: string
+      description: Description of the image to generate
+    style:
+      type: string
+      description: Art style (e.g., "photorealistic", "watercolor", "anime", "oil painting", "cyberpunk")
+    aspectRatio:
+      type: string
+      enum:
+        - '1:1'
+        - '2:3'
+        - '3:2'
+        - '3:4'
+        - '4:3'
+        - '4:5'
+        - '5:4'
+        - '9:16'
+        - '16:9'
+        - '21:9'
+      default: '1:1'
+      description: 'Aspect ratio: 1:1 (square), 16:9 (widescreen), 9:16 (portrait/mobile), 21:9 (ultrawide), etc.'
+    imageSize:
+      type: string
+      enum:
+        - 1K
+        - 2K
+        - 4K
+      default: 2K
+      description: 'Resolution: 1K (fast), 2K (balanced, default), 4K (highest quality)'
+    useGoogleSearch:
+      type: boolean
+      default: false
+      description: Ground the image in real-world info via Google Search (useful for current events, real places, etc.)
+  required:
+    - prompt
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-generate-image"]({
+    prompt: "<prompt>",
+    style: "<style>",
+    aspectRatio: "<aspectRatio>"
+  });

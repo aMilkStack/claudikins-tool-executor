@@ -1,0 +1,30 @@
+name: gemini-structured
+server: gemini
+category: ai-models
+description: No description provided
+inputSchema:
+  type: object
+  properties:
+    prompt:
+      type: string
+      description: The prompt or data to process
+    schema:
+      type: string
+      description: >-
+        JSON Schema as a string. Example:
+        {"type":"object","properties":{"name":{"type":"string"},"age":{"type":"integer"}},"required":["name"]}
+    useGoogleSearch:
+      type: boolean
+      default: false
+      description: Use Google Search to ground the response in real-world data
+  required:
+    - prompt
+    - schema
+  additionalProperties: false
+  $schema: http://json-schema.org/draft-07/schema#
+example: |-
+  await gemini["gemini-structured"]({
+    prompt: "<prompt>",
+    schema: "<schema>",
+    useGoogleSearch: true
+  });

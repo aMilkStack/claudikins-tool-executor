@@ -1,0 +1,94 @@
+name: apify-slash-rag-web-browser
+server: apify
+category: web
+description: >-
+  This tool calls the Actor "apify/rag-web-browser" and retrieves its output results.
+
+  Use this tool instead of the "call-actor" if user requests this specific Actor.
+
+  Actor description: Web browser for OpenAI Assistants, RAG pipelines, or AI agents, similar to a web browser in
+  ChatGPT. It queries Google Search, scrapes the top N pages, and returns their content as Markdown for further
+  processing by an LLM. It can also scrape individual URLs.Use this tool when user wants to GET or RETRIEVE actual data
+  immediately (one-time data retrieval).
+
+  This tool directly fetches and returns data - it does NOT just find tools.
+
+
+  Examples of when to use:
+
+  - User wants current/immediate data (e.g., "Get flight prices for tomorrow", "What's the weather today?")
+
+  - User needs to fetch specific content now (e.g., "Fetch news articles from CNN", "Get product info from Amazon")
+
+  - User has time indicators like "today", "current", "latest", "recent", "now"
+
+
+  This is for general web scraping and immediate data needs. For repeated/scheduled scraping of specific platforms
+  (e-commerce, social media), consider suggesting a specialized Actor from the Store for better performance and
+  reliability.
+inputSchema:
+  type: object
+  properties:
+    query:
+      title: Search term or URL
+      description: >-
+        **REQUIRED** Enter Google Search keywords or a URL of a specific web page. The keywords might include the
+        [advanced search operators](https://blog.apify.com/how-to-scrape-google-like-a-pro/). Examples:
+
+
+        - <code>san francisco weather</code>
+
+        - <code>https://www.cnn.com</code>
+
+        - <code>function calling site:openai.com</code>
+
+        Example values: "web browser for RAG pipelines -site:reddit.com"
+      type: string
+      prefill: web browser for RAG pipelines -site:reddit.com
+      examples:
+        - web browser for RAG pipelines -site:reddit.com
+    maxResults:
+      title: Maximum results
+      description: >-
+        The maximum number of top organic Google Search results whose web pages will be extracted. If `query` is a URL,
+        then this field is ignored and the Actor only fetches the specific web page.
+
+        Example values: 3
+      type: integer
+      default: 3
+      examples:
+        - 3
+    outputFormats:
+      title: Output formats
+      description: |-
+        Select one or more formats to which the target web pages will be extracted and saved in the resulting dataset.
+        Example values: ["markdown"]
+      type: array
+      default:
+        - markdown
+      items:
+        type: string
+        enum:
+          - text
+          - markdown
+          - html
+        enumTitles:
+          - Plain text
+          - Markdown
+          - HTML
+      examples:
+        - markdown
+  required:
+    - query
+  title: RAG Web Browser
+  description: >-
+    Web browser for OpenAI Assistants, RAG pipelines, or AI agents, similar to a web browser in ChatGPT. It queries
+    Google Search, scrapes the top N pages, and returns their content as Markdown for further processing by an LLM. It
+    can also scrape individual URLs.
+  $id: https://apify.com/mcp/apify-slash-rag-web-browser/schema.json
+example: |-
+  await apify["apify-slash-rag-web-browser"]({
+    query: "<query>",
+    maxResults: 0,
+    outputFormats: []
+  });
