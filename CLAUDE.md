@@ -13,7 +13,7 @@ An MCP server that wraps other MCP servers into a single interface with three to
 - `get_tool_schema` - Get full inputSchema for a specific tool
 - `execute_code` - TypeScript execution in a sandbox with pre-connected MCP clients
 
-Reduces Claude Code context consumption from ~50k tokens to ~800 tokens by not loading tool definitions upfront.
+Reduces Claude Code context consumption from ~50k tokens to ~1.1k tokens by not loading tool definitions upfront.
 
 ## Architecture
 

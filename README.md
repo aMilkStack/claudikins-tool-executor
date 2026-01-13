@@ -11,7 +11,7 @@ This wrapper reduces tool definitions to just **3 tools**, with semantic search 
 | Setup | Tools | Tokens | Context Used |
 |-------|-------|--------|--------------|
 | Direct MCP (example: 9 servers) | 102 | ~50,000 | 25% |
-| **Wrapper** | **3** | **~800** | **0.4%** |
+| **Wrapper** | **3** | **~1.1k** | **0.5%** |
 
 ## How It Works
 

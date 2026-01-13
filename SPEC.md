@@ -2,7 +2,7 @@
 
 ## Overview
 
-A single MCP server that wraps all other MCP servers, providing Claude Code with efficient tool discovery and execution while reducing context consumption from ~47k tokens to ~800 tokens.
+A single MCP server that wraps all other MCP servers, providing Claude Code with efficient tool discovery and execution while reducing context consumption from ~47k tokens to ~1.1k tokens.
 
 ## Problem Statement
 
@@ -24,7 +24,7 @@ Claude discovers tools by exploring a filesystem registry, writes code that call
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    Claude Code                          │
-│  Only loads: tool_executor MCP (~800 tokens)            │
+│  Only loads: tool_executor MCP (~1.1k tokens)           │
 └─────────────────────────────────────────────────────────┘
                           │
                           ▼
@@ -620,7 +620,7 @@ Log first registry access per session to gather data on which hook works best.
 | search_tools definition | ~150 |
 | execute_code definition | ~200 |
 | MCP server overhead | ~450 |
-| **Total initial context** | **~800** |
+| **Total initial context** | **~1,100** |
 
 | Action | Token Cost |
 |--------|------------|
@@ -628,7 +628,7 @@ Log first registry access per session to gather data on which hook works best.
 | execute_code call | ~100-300 |
 | Full tool exploration | ~2000 |
 
-**Comparison:** 16 MCPs with ~200+ tools = ~50,000+ tokens if loaded directly vs ~800 tokens with tool_executor
+**Comparison:** 16 MCPs with ~200+ tools = ~50,000+ tokens if loaded directly vs ~1.1k tokens with tool_executor
 
 ---
 
