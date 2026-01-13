@@ -85,6 +85,13 @@ server.registerTool(
     title: "Execute Code",
     description: `Execute TypeScript/JavaScript code with access to MCP clients and workspace.
 
+**WORKFLOW** (follow this order):
+1. Use search_tools("your query") to find relevant tools
+2. Use get_tool_schema("tool_name") to get full parameters
+3. Use execute_code to run your code with the discovered tools
+
+If you don't know which tool to use, ALWAYS search first.
+
 **IMPORTANT: Context-Efficient Pattern**
 MCP tool responses are auto-saved to workspace when large. Your code receives a reference:
 \`\`\`typescript
