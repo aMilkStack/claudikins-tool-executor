@@ -69,19 +69,20 @@ tests/
 npm run build    # Compile TypeScript
 npm run dev      # Watch mode
 npm run extract  # Regenerate registry from MCPs
-npm test         # Run all tests (26 tests)
+npm test         # Run all tests (43 tests)
 ```
 
 ## Claude Code Configuration
 
-This MCP server is configured in `~/.claude/mcp.json`:
+This MCP server is configured in `~/.claude.json` under the `mcpServers` key:
 
 ```json
 {
   "mcpServers": {
     "tool-executor": {
+      "type": "stdio",
       "command": "node",
-      "args": ["/home/ethanlee/projects/tool-executor-mcp/dist/index.js"],
+      "args": ["/path/to/tool-executor-mcp/dist/index.js"],
       "env": {
         "GEMINI_API_KEY": "...",
         "APIFY_TOKEN": "..."

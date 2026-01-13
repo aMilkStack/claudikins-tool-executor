@@ -52,12 +52,13 @@ npm run build
 
 ### Configure Claude Code
 
-Create or edit `~/.claude/mcp.json`:
+Add to `~/.claude.json` under the `mcpServers` key:
 
 ```json
 {
   "mcpServers": {
     "tool-executor": {
+      "type": "stdio",
       "command": "node",
       "args": ["/absolute/path/to/tool-executor-mcp/dist/index.js"],
       "env": {
@@ -69,7 +70,7 @@ Create or edit `~/.claude/mcp.json`:
 }
 ```
 
-**Important:** Replace `/absolute/path/to/` with the actual path where you cloned the repo.
+**Important:** Replace `/absolute/path/to/` with the actual path where you cloned the repo. The `~/.claude.json` file contains other Claude Code settings — just add/merge the `mcpServers` section.
 
 ### Restart Claude Code
 
@@ -179,12 +180,13 @@ npm run build
 
 ### Step 4: Update Claude Code Config
 
-Pass any required environment variables in your `mcp.json`:
+Pass any required environment variables in `~/.claude.json`:
 
 ```json
 {
   "mcpServers": {
     "tool-executor": {
+      "type": "stdio",
       "command": "node",
       "args": ["/path/to/dist/index.js"],
       "env": {

@@ -11,8 +11,8 @@ export const SearchToolsInputSchema = z.object({
     .int()
     .min(1)
     .max(50)
-    .default(10)
-    .describe("Maximum results to return (default: 10)"),
+    .default(5)
+    .describe("Maximum results to return (default: 5)"),
   offset: z.number()
     .int()
     .min(0)

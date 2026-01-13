@@ -39,14 +39,18 @@ export function initBM25(tools: ToolDefinition[]): void {
 
 /**
  * Search tools using BM25
+ * wink-bm25 returns [[docId: string, score: number], ...] tuples
  */
 export function searchBM25(query: string, limit: number): ToolDefinition[] {
   if (!bm25Engine || !isInitialized) {
     return [];
   }
 
-  const results = bm25Engine.search(query, limit);
-  return results.map((idx: number) => indexedTools[idx]);
+  // wink-bm25 types claim number[] but actually returns [string, number][]
+  const results = bm25Engine.search(query, limit) as unknown as [string, number][];
+  return results
+    .map(([docId]) => indexedTools[parseInt(docId, 10)])
+    .filter((tool): tool is ToolDefinition => tool !== undefined);
 }
 
 /**

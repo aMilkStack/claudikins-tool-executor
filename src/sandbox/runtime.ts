@@ -7,26 +7,18 @@ import { MAX_LOG_CHARS, MAX_LOG_ENTRY_CHARS, MCP_RESULTS_DIR } from "../constant
 const DEFAULT_TIMEOUT = 30_000; // 30 seconds
 
 /**
- * Summarise logs to prevent context bloat
+ * Summarise logs aggressively to minimize context usage
  */
 function summariseLogs(logs: unknown[]): unknown[] {
-  const serialised = JSON.stringify(logs);
+  if (logs.length === 0) return [];
 
+  const serialised = JSON.stringify(logs);
   if (serialised.length <= MAX_LOG_CHARS) {
     return logs;
   }
 
-  // Return summary with count and preview
-  return [
-    {
-      _summary: true,
-      totalLogs: logs.length,
-      totalChars: serialised.length,
-      limit: MAX_LOG_CHARS,
-      preview: logs.slice(0, 3),
-      hint: "Use workspace.write() to save large outputs, then read on demand.",
-    },
-  ];
+  // Ultra-minimal summary - just confirmation + size
+  return [`Output truncated (${serialised.length} chars). Check workspace for full results.`];
 }
 
 /**
