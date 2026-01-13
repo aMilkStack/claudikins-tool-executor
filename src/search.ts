@@ -76,6 +76,7 @@ export interface SearchResponse {
   results: SearchResult[];
   source: "serena" | "local";
   suggestion?: string;
+  fallbackReason?: string;
 }
 
 /**
@@ -226,18 +227,23 @@ export async function searchTools(query: string, limit = 10): Promise<SearchResp
 
   // Fall back to local search
   const localResults = await searchLocally(query, limit);
+  const fallbackReason = serenaResults === null
+    ? "Serena unavailable - using text search"
+    : "No semantic matches - using text search";
 
   if (localResults.length === 0) {
     return {
       results: [],
       source: "local",
+      fallbackReason,
       suggestion: "Try broader terms like 'image', 'code search', 'diagram', or browse categories: game-dev, knowledge, ai-models, web, ui",
     };
   }
 
   return {
     results: localResults,
-    source: serenaResults === null ? "local" : "local", // local fallback
+    source: "local",
+    fallbackReason,
   };
 }
 

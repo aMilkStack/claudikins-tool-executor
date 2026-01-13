@@ -44,7 +44,7 @@ They're intentionally separate: one finds tools, the other analyses your codebas
 ### Setup
 
 ```bash
-git clone https://github.com/yourusername/tool-executor-mcp.git
+git clone https://github.com/aMilkStack/tool-executor-mcp.git
 cd tool-executor-mcp
 npm install
 npm run build
@@ -52,7 +52,7 @@ npm run build
 
 ### Configure Claude Code
 
-Add to `~/.claude/mcp.json`:
+Create or edit `~/.claude/mcp.json`:
 
 ```json
 {
@@ -61,12 +61,26 @@ Add to `~/.claude/mcp.json`:
       "command": "node",
       "args": ["/absolute/path/to/tool-executor-mcp/dist/index.js"],
       "env": {
-        "YOUR_API_KEY": "if-needed"
+        "GEMINI_API_KEY": "your-key-here",
+        "APIFY_TOKEN": "your-token-here"
       }
     }
   }
 }
 ```
+
+**Important:** Replace `/absolute/path/to/` with the actual path where you cloned the repo.
+
+### Restart Claude Code
+
+After any changes to the MCP server code:
+
+```bash
+npm run build    # Rebuild TypeScript
+# Then restart Claude Code (Cmd/Ctrl+Shift+P → "Reload Window" or quit and reopen)
+```
+
+Claude Code spawns a new MCP process on startup. The old process is killed automatically thanks to stdin close detection.
 
 ## Customising Your MCP Stack
 

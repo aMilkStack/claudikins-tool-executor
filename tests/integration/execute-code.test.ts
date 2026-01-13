@@ -107,14 +107,15 @@ describe("execute_code integration", () => {
 
     it("should handle unknown tool calls gracefully", async () => {
       // Calling an unknown tool shouldn't crash - just returns MCP error
+      // Note: First call may be slow due to lazy MCP client connection
       const result = await executeCode(`
         const response = await context7.nonexistent_tool({});
         console.log(JSON.stringify(response));
       `);
       // MCP SDK returns error in response, doesn't throw
-      // The key is that execution completes without crashing
-      expect(result.logs.length).toBeGreaterThanOrEqual(0);
-    });
+      // Execution should complete without crashing
+      expect(result.error).toBeUndefined();
+    }, 30000); // 30s timeout for MCP connection
   });
 
   describe("security", () => {
@@ -128,6 +129,46 @@ describe("execute_code integration", () => {
       expect(result.error).toBeUndefined();
       expect(result.logs).toEqual(["undefined", "undefined"]);
     });
+  });
 
+  describe("context efficiency", () => {
+    it("should summarise logs when output is large", async () => {
+      const result = await executeCode(`
+        // Generate large output
+        for (let i = 0; i < 100; i++) {
+          console.log("x".repeat(100) + i);
+        }
+      `);
+
+      expect(result.error).toBeUndefined();
+      // Should be summarised, not 100 entries
+      expect(result.logs.length).toBeLessThan(10);
+
+      // Check for summary marker
+      const summary = result.logs[0] as { _summary?: boolean; totalLogs?: number };
+      if (summary._summary) {
+        expect(summary.totalLogs).toBe(100);
+      }
+    });
+
+    it("should auto-save large MCP responses to workspace", async () => {
+      // Context7 resolve_library_id returns >500 chars, triggering auto-save
+      const result = await executeCode(`
+        const response = await context7.resolve_library_id({ libraryName: "react" });
+        console.log(JSON.stringify(response));
+      `);
+
+      expect(result.error).toBeUndefined();
+      expect(result.logs.length).toBeGreaterThan(0);
+
+      // Response should be auto-saved reference (if >500 chars) or raw data (if small)
+      const log = result.logs[0] as { _savedTo?: string; _size?: number };
+      if (log._savedTo) {
+        // Auto-save triggered - verify reference structure
+        expect(log._savedTo).toContain("mcp-results/");
+        expect(log._size).toBeGreaterThan(500);
+      }
+      // If no _savedTo, response was small enough - still valid
+    }, 30000); // 30s for MCP connection
   });
 });

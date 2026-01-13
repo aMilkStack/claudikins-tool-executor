@@ -27,9 +27,15 @@ Claude Code → tool_executor MCP → Sandbox Runtime → All other MCPs
 
 ```
 src/
-├── index.ts           # MCP server entry point (3 tools)
-├── types.ts           # Shared types
+├── index.ts           # MCP server entry point (McpServer + registerTool)
+├── schemas.ts         # Zod input schemas for all tools
+├── types.ts           # Shared TypeScript types
 ├── search.ts          # Serena integration + local fallback
+├── tools/             # Tool handlers (extracted from index.ts)
+│   ├── index.ts       # Barrel export
+│   ├── search.ts      # search_tools handler
+│   ├── schema.ts      # get_tool_schema handler
+│   └── execute.ts     # execute_code handler
 └── sandbox/
     ├── clients.ts     # Lazy MCP client connections + lifecycle
     ├── runtime.ts     # Code execution with timeout
@@ -65,6 +71,27 @@ npm run dev      # Watch mode
 npm run extract  # Regenerate registry from MCPs
 npm test         # Run all tests (26 tests)
 ```
+
+## Claude Code Configuration
+
+This MCP server is configured in `~/.claude/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "tool-executor": {
+      "command": "node",
+      "args": ["/home/ethanlee/projects/tool-executor-mcp/dist/index.js"],
+      "env": {
+        "GEMINI_API_KEY": "...",
+        "APIFY_TOKEN": "..."
+      }
+    }
+  }
+}
+```
+
+**After code changes:** Run `npm run build` then restart Claude Code. The old MCP process is killed automatically when Claude Code disconnects (stdin close detection).
 
 ## Key Patterns
 

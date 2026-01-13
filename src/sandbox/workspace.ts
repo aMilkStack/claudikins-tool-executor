@@ -1,6 +1,7 @@
 import { readFile, writeFile, appendFile, unlink, readdir, mkdir as fsMkdir, stat as fsStat } from "node:fs/promises";
 import { join, resolve, normalize } from "node:path";
 import { glob as globFs } from "glob";
+import { MCP_RESULTS_DIR } from "../constants.js";
 
 const WORKSPACE_ROOT = resolve(process.cwd(), "workspace");
 
@@ -23,6 +24,40 @@ function resolvePath(relativePath: string): string {
   }
 
   return fullPath;
+}
+
+/**
+ * Clean up old MCP results (older than maxAge ms)
+ * Default: 1 hour (3600000ms)
+ */
+async function cleanupMcpResults(maxAgeMs: number = 3600000): Promise<number> {
+  const dir = join(WORKSPACE_ROOT, MCP_RESULTS_DIR);
+
+  try {
+    const files = await readdir(dir);
+    const now = Date.now();
+    let deleted = 0;
+
+    for (const file of files) {
+      const filepath = join(dir, file);
+      const stats = await fsStat(filepath);
+
+      if (now - stats.mtimeMs > maxAgeMs) {
+        await unlink(filepath);
+        deleted++;
+      }
+    }
+
+    return deleted;
+  } catch (err) {
+    // ENOENT is expected if directory doesn't exist yet
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      return 0;
+    }
+    // Log unexpected errors (permissions, disk full, etc.)
+    console.error("cleanupMcpResults failed:", err);
+    return 0;
+  }
 }
 
 /**
@@ -105,8 +140,13 @@ export const workspace = {
       const fullPath = resolvePath(path);
       await fsStat(fullPath);
       return true;
-    } catch {
-      return false;
+    } catch (err) {
+      // ENOENT means file doesn't exist - expected
+      if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+        return false;
+      }
+      // Rethrow unexpected errors (permissions, etc.)
+      throw err;
     }
   },
 
@@ -121,6 +161,10 @@ export const workspace = {
       isDir: stats.isDirectory(),
     };
   },
+
+  // MCP results management
+
+  cleanupMcpResults,
 };
 
 export type Workspace = typeof workspace;

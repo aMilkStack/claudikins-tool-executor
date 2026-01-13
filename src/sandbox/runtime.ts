@@ -2,11 +2,36 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { getClient, logMcpCall, SERVER_CONFIGS } from "./clients.js";
 import { workspace } from "./workspace.js";
 import { ExecutionResult, MCPClients } from "../types.js";
+import { MAX_LOG_CHARS, MAX_LOG_ENTRY_CHARS, MCP_RESULTS_DIR } from "../constants.js";
 
 const DEFAULT_TIMEOUT = 30_000; // 30 seconds
 
 /**
+ * Summarise logs to prevent context bloat
+ */
+function summariseLogs(logs: unknown[]): unknown[] {
+  const serialised = JSON.stringify(logs);
+
+  if (serialised.length <= MAX_LOG_CHARS) {
+    return logs;
+  }
+
+  // Return summary with count and preview
+  return [
+    {
+      _summary: true,
+      totalLogs: logs.length,
+      totalChars: serialised.length,
+      limit: MAX_LOG_CHARS,
+      preview: logs.slice(0, 3),
+      hint: "Use workspace.write() to save large outputs, then read on demand.",
+    },
+  ];
+}
+
+/**
  * Create a proxy that wraps an MCP client's tool calls
+ * Large responses are auto-saved to workspace, returning references
  */
 function createClientProxy(name: keyof MCPClients): Record<string, (args: Record<string, unknown>) => Promise<unknown>> {
   return new Proxy({} as Record<string, (args: Record<string, unknown>) => Promise<unknown>>, {
@@ -27,6 +52,37 @@ function createClientProxy(name: keyof MCPClients): Record<string, (args: Record
             args,
             duration: Date.now() - startTime,
           });
+
+          // Check response size
+          const serialised = JSON.stringify(result);
+
+          if (serialised.length > MAX_LOG_ENTRY_CHARS) {
+            // Auto-save large responses to workspace
+            const filename = `${Date.now()}-${name}-${toolName}.json`;
+            const filepath = `${MCP_RESULTS_DIR}/${filename}`;
+
+            try {
+              await workspace.mkdir(MCP_RESULTS_DIR);
+              await workspace.writeJSON(filepath, result);
+
+              // Return reference with preview
+              return {
+                _savedTo: filepath,
+                _size: serialised.length,
+                _preview: serialised.slice(0, 200) + "...",
+                _hint: `Full result saved to workspace. Use workspace.readJSON("${filepath}") to access.`,
+              };
+            } catch (saveErr) {
+              // If save fails, return truncated result with warning
+              console.error(`Failed to auto-save large result: ${saveErr}`);
+              return {
+                _warning: "Result too large to auto-save, returning truncated",
+                _size: serialised.length,
+                _preview: serialised.slice(0, 1000),
+              };
+            }
+          }
+
           return result;
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : String(error);
@@ -126,13 +182,13 @@ export async function executeCode(
       logs.push({ returned: result });
     }
 
-    return { logs };
+    return { logs: summariseLogs(logs) };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     const stack = error instanceof Error ? error.stack : undefined;
 
     return {
-      logs,
+      logs: summariseLogs(logs),
       error: errorMessage,
       stack,
     };

@@ -4,7 +4,13 @@
       "WebFetch(domain:github.com)",
       "WebSearch",
       "Skill(superpowers:finishing-a-development-branch)",
-      "mcp__tool-executor__execute_code"
+      "mcp__tool-executor__execute_code",
+      "Skill(superpowers:executing-plans)",
+      "Bash(pkill:*)",
+      "Bash(git commit:*)",
+      "Bash(timeout 3 node:*)",
+      "Bash(rm:*)",
+      "Bash(npx vitest:*)"
     ]
   },
   "outputStyle": "Explanatory",

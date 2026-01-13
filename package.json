@@ -13,10 +13,11 @@
     "test:integration": "vitest run tests/integration"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^1.25.2",
     "dotenv": "^17.2.3",
     "glob": "^10.3.0",
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
