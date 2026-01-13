@@ -1,6 +1,7 @@
 import { readFile, writeFile, appendFile, unlink, readdir, mkdir as fsMkdir, stat as fsStat } from "node:fs/promises";
 import { join, resolve, normalize } from "node:path";
 import { glob as globFs } from "glob";
+import { MCP_RESULTS_DIR } from "../constants.js";
 
 const WORKSPACE_ROOT = resolve(process.cwd(), "workspace");
 
@@ -23,6 +24,18 @@ function resolvePath(relativePath: string): string {
   }
 
   return fullPath;
+}
+
+/**
+ * Ensure the MCP results directory exists and return path for new result
+ */
+async function getNextMcpResultPath(): Promise<string> {
+  const dir = join(WORKSPACE_ROOT, MCP_RESULTS_DIR);
+  await fsMkdir(dir, { recursive: true });
+
+  const timestamp = Date.now();
+  const filename = `${timestamp}.json`;
+  return join(MCP_RESULTS_DIR, filename);
 }
 
 /**
@@ -121,6 +134,10 @@ export const workspace = {
       isDir: stats.isDirectory(),
     };
   },
+
+  // MCP results management
+
+  getNextMcpResultPath,
 };
 
 export type Workspace = typeof workspace;
