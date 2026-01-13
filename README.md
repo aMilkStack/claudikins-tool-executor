@@ -277,6 +277,53 @@ npm run extract      # Regenerate registry from live MCPs
 npm test             # Run tests
 ```
 
+## Troubleshooting
+
+### Serena not finding tools
+
+**Symptom**: `search_tools` returns empty or irrelevant results
+
+**Solutions**:
+1. Check registry files exist: `ls registry/*/*`
+2. Verify YAML format: `cat registry/ui/mermaid/generate_mermaid_diagram.yaml`
+3. Restart Claude Code to reinitialise Serena index
+
+### execute_code timeout
+
+**Symptom**: Code execution times out after 30 seconds
+
+**Solutions**:
+1. Pass longer timeout: `execute_code({ code: "...", timeout: 120000 })`
+2. Break long operations into smaller chunks
+3. Check if MCP server is responding: run `tool-executor doctor`
+
+### MCP connection fails
+
+**Symptom**: "Failed to connect" errors in logs
+
+**Solutions**:
+1. Check the MCP server runs standalone: `npx -y mcp-mermaid`
+2. Verify environment variables are set in `mcp.json`
+3. Check for port conflicts or firewall issues
+
+### workspace fills up
+
+**Symptom**: Disk space consumed by `workspace/mcp-results/`
+
+**Solutions**:
+1. Run cleanup: `await workspace.cleanupMcpResults(24)`
+2. Set up periodic cleanup in your workflow
+3. Manually delete: `rm -rf workspace/mcp-results/*`
+
+### Claude doesn't use search_tools first
+
+**Symptom**: Claude tries `execute_code` with wrong tool names
+
+**Solutions**:
+1. The `execute_code` description includes workflow reminder
+2. Ensure CLAUDE.md is in project root with Tool Usage Protocol
+3. Explicitly ask Claude to "search for tools first"
+
 ## License
 
 MIT
