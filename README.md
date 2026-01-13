@@ -86,9 +86,39 @@ Claude Code spawns a new MCP process on startup. The old process is killed autom
 
 This repo includes a starter configuration. **You'll want to swap in your own MCPs.**
 
-### Step 1: Edit Server Configs
+### Option A: Config File (Recommended)
 
-Open `src/sandbox/clients.ts` and modify `SERVER_CONFIGS`:
+Create `tool-executor.config.json` in your project root:
+
+```json
+{
+  "servers": [
+    {
+      "name": "myserver",
+      "displayName": "My Server",
+      "command": "npx",
+      "args": ["-y", "my-mcp-package"]
+    },
+    {
+      "name": "openai",
+      "displayName": "OpenAI",
+      "command": "npx",
+      "args": ["-y", "openai-mcp"],
+      "env": {
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}"
+      }
+    }
+  ]
+}
+```
+
+The server will automatically detect and load this file. No code changes needed.
+
+See `tool-executor.config.example.json` for a full example.
+
+### Option B: Edit Source Code
+
+Open `src/sandbox/clients.ts` and modify `DEFAULT_CONFIGS`:
 
 ```typescript
 export const SERVER_CONFIGS: ServerConfig[] = [

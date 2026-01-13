@@ -1,0 +1,26 @@
+{
+  "$schema": "./node_modules/tool-executor-mcp-server/dist/config-schema.json",
+  "servers": [
+    {
+      "name": "myserver",
+      "displayName": "My Server",
+      "command": "npx",
+      "args": ["-y", "my-mcp-package"]
+    },
+    {
+      "name": "openai",
+      "displayName": "OpenAI",
+      "command": "npx",
+      "args": ["-y", "openai-mcp"],
+      "env": {
+        "OPENAI_API_KEY": "${OPENAI_API_KEY}"
+      }
+    },
+    {
+      "name": "pythonserver",
+      "displayName": "Python Server",
+      "command": "uvx",
+      "args": ["some-python-mcp"]
+    }
+  ]
+}
