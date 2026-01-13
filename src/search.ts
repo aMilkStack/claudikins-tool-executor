@@ -127,12 +127,19 @@ async function searchWithSerena(query: string, limit: number): Promise<SearchRes
       return null;
     }
 
+    // Convert query to flexible regex: "generate image" → "generate.*image"
+    // This allows matching across word boundaries, underscores, etc.
+    const pattern = query
+      .split(/\s+/)
+      .map(term => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')) // escape regex chars
+      .join('.*');
+
     // Use Serena's search_for_pattern to find matches in registry
     // relative_path is "." since registry project is already activated
     const result = await serena.callTool({
       name: "search_for_pattern",
       arguments: {
-        substring_pattern: query,
+        substring_pattern: pattern,
         relative_path: ".",
         context_lines_before: 2,
         context_lines_after: 2,
