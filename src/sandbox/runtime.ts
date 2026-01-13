@@ -2,11 +2,13 @@ import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { getClient, logMcpCall, SERVER_CONFIGS } from "./clients.js";
 import { workspace } from "./workspace.js";
 import { ExecutionResult, MCPClients } from "../types.js";
+import { MAX_LOG_ENTRY_CHARS, MCP_RESULTS_DIR } from "../constants.js";
 
 const DEFAULT_TIMEOUT = 30_000; // 30 seconds
 
 /**
  * Create a proxy that wraps an MCP client's tool calls
+ * Large responses are auto-saved to workspace, returning references
  */
 function createClientProxy(name: keyof MCPClients): Record<string, (args: Record<string, unknown>) => Promise<unknown>> {
   return new Proxy({} as Record<string, (args: Record<string, unknown>) => Promise<unknown>>, {
@@ -27,6 +29,26 @@ function createClientProxy(name: keyof MCPClients): Record<string, (args: Record
             args,
             duration: Date.now() - startTime,
           });
+
+          // Check response size
+          const serialised = JSON.stringify(result);
+
+          if (serialised.length > MAX_LOG_ENTRY_CHARS) {
+            // Auto-save large responses to workspace
+            const filename = `${Date.now()}-${name}-${toolName}.json`;
+            const filepath = `${MCP_RESULTS_DIR}/${filename}`;
+            await workspace.mkdir(MCP_RESULTS_DIR);
+            await workspace.writeJSON(filepath, result);
+
+            // Return reference with preview
+            return {
+              _savedTo: filepath,
+              _size: serialised.length,
+              _preview: serialised.slice(0, 200) + "...",
+              _hint: `Full result saved to workspace. Use workspace.readJSON("${filepath}") to access.`,
+            };
+          }
+
           return result;
         } catch (error) {
           const errorMessage = error instanceof Error ? error.message : String(error);
