@@ -124,7 +124,7 @@ async function connectClientInternal(
 
   try {
     const client = new Client(
-      { name: `tool-executor-${name}`, version: "1.0.0" },
+      { name: `claudikins-${name}`, version: "1.0.0" },
       { capabilities: {} }
     );
     const transport = new StdioClientTransport({

@@ -17,7 +17,7 @@ import { startLifecycleManagement } from "./sandbox/clients.js";
 import { getAvailableClientNames } from "./sandbox/runtime.js";
 
 const server = new McpServer({
-  name: "tool-executor-mcp-server",
+  name: "@claudikins/tool-executor",
   version: "1.0.0",
 });
 
@@ -141,7 +141,7 @@ async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
 
-  console.error("Tool Executor MCP running");
+  console.error("Claudikins Tool Executor running");
   console.error(`Available MCP clients: ${getAvailableClientNames().join(", ")}`);
 }
 

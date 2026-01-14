@@ -1,20 +1,21 @@
 {
-  "name": "tool-executor-mcp-server",
+  "name": "@claudikins/tool-executor",
   "version": "1.0.0",
-  "description": "MCP server that wraps multiple MCP servers into a single context-efficient interface",
+  "description": "MCP server that wraps multiple MCP servers into a single context-efficient interface - part of the Claudikins framework",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "tool-executor": "./dist/cli.js"
+    "claudikins": "./dist/cli.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aMilkStack/tool-executor-mcp.git"
+    "url": "git+https://github.com/aMilkStack/claudikins-tool-executor.git"
   },
   "keywords": [
     "mcp",
     "claude",
     "anthropic",
+    "claudikins",
     "tool-executor",
     "context-efficient",
     "model-context-protocol"
@@ -22,9 +23,9 @@
   "author": "Ethan Lee",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/aMilkStack/tool-executor-mcp/issues"
+    "url": "https://github.com/aMilkStack/claudikins-tool-executor/issues"
   },
-  "homepage": "https://github.com/aMilkStack/tool-executor-mcp#readme",
+  "homepage": "https://github.com/aMilkStack/claudikins-tool-executor#readme",
   "files": [
     "dist",
     "registry",

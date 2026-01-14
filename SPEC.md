@@ -1,8 +1,8 @@
-# Tool Executor MCP - Technical Specification
+# Claudikins Tool Executor - Technical Specification
 
 ## Overview
 
-A single MCP server that wraps all other MCP servers, providing Claude Code with efficient tool discovery and execution while reducing context consumption from ~47k tokens to ~1.1k tokens.
+**Part of the Claudikins framework** — A single MCP server that wraps all other MCP servers, providing Claude Code with efficient tool discovery and execution while reducing context consumption from ~47k tokens to ~1.1k tokens.
 
 ## Problem Statement
 
@@ -10,7 +10,7 @@ Claude Code loads all MCP tool definitions into context upfront. With 114+ tools
 
 ## Solution
 
-Tool Executor provides two capabilities:
+Claudikins Tool Executor provides two capabilities:
 
 1. **search_tools** - Semantic search over tool definitions using Serena
 2. **execute_code** - TypeScript execution in a sandbox with pre-connected MCP clients
@@ -24,12 +24,12 @@ Claude discovers tools by exploring a filesystem registry, writes code that call
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                    Claude Code                          │
-│  Only loads: tool_executor MCP (~1.1k tokens)           │
+│  Only loads: Claudikins Tool Executor (~1.1k tokens)    │
 └─────────────────────────────────────────────────────────┘
                           │
                           ▼
 ┌─────────────────────────────────────────────────────────┐
-│                 tool_executor MCP                       │
+│            Claudikins Tool Executor                     │
 │                                                         │
 │  search_tools ──────► Serena (semantic search)          │
 │       │                    │                            │
@@ -291,7 +291,7 @@ export async function connectAll(): Promise<MCPClients> {
 }
 
 async function connect(name: string, command: string, args: string[]): Promise<Client> {
-  const client = new Client({ name: `tool-executor-${name}`, version: "1.0.0" });
+  const client = new Client({ name: `claudikins-${name}`, version: "1.0.0" });
   const transport = new StdioClientTransport({ command, args });
   await client.connect(transport);
   return client;
@@ -386,7 +386,7 @@ import { executeCode } from "./sandbox/runtime.js";
 import { searchTools } from "./search.js";
 
 const server = new Server(
-  { name: "tool-executor", version: "1.0.0" },
+  { name: "@claudikins/tool-executor", version: "1.0.0" },
   { capabilities: { tools: {} } }
 );
 
@@ -587,7 +587,7 @@ Log first registry access per session to gather data on which hook works best.
 ## File Structure
 
 ```
-~/.claude/tool-executor-mcp/
+~/.claude/claudikins-tool-executor/
 ├── package.json
 ├── tsconfig.json
 ├── SPEC.md
@@ -628,7 +628,7 @@ Log first registry access per session to gather data on which hook works best.
 | execute_code call | ~100-300 |
 | Full tool exploration | ~2000 |
 
-**Comparison:** 16 MCPs with ~200+ tools = ~50,000+ tokens if loaded directly vs ~1.1k tokens with tool_executor
+**Comparison:** 16 MCPs with ~200+ tools = ~50,000+ tokens if loaded directly vs ~1.1k tokens with Claudikins Tool Executor
 
 ---
 

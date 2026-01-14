@@ -49,7 +49,7 @@ async function getRegistrySerena(): Promise<Client | null> {
 async function connectRegistrySerena(): Promise<Client | null> {
   try {
     const client = new Client(
-      { name: "tool-executor-registry-search", version: "1.0.0" },
+      { name: "claudikins-registry-search", version: "1.0.0" },
       { capabilities: {} }
     );
 

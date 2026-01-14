@@ -1,5 +1,5 @@
 {
-  "$schema": "./node_modules/tool-executor-mcp-server/dist/config-schema.json",
+  "$schema": "./node_modules/@claudikins/tool-executor/dist/config-schema.json",
   "servers": [
     {
       "name": "myserver",

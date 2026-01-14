@@ -12,8 +12,8 @@ const packageJson = JSON.parse(readFileSync(resolve(__dirname, "..", "package.js
 const program = new Command();
 
 program
-  .name("tool-executor")
-  .description("CLI for tool-executor-mcp-server")
+  .name("claudikins")
+  .description("CLI for @claudikins/tool-executor")
   .version(packageJson.version);
 
 program
@@ -71,7 +71,7 @@ program
 
     writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2));
     console.log("✅ Created tool-executor.config.json");
-    console.log("   Edit this file to add your MCP servers, then run: tool-executor extract");
+    console.log("   Edit this file to add your MCP servers, then run: claudikins extract");
   });
 
 program
@@ -80,7 +80,7 @@ program
   .option("-a, --all", "Extract from all configured servers")
   .action(async (options) => {
     if (!options.all) {
-      console.log("Usage: tool-executor extract --all");
+      console.log("Usage: claudikins extract --all");
       console.log("\nExtracts tool schemas from all configured MCP servers");
       console.log("and generates YAML files in the registry/ directory.");
       return;
@@ -92,7 +92,7 @@ program
     const scriptPath = resolve(process.cwd(), "scripts/extract-schemas.ts");
     if (!existsSync(scriptPath)) {
       console.error("❌ Extract script not found at scripts/extract-schemas.ts");
-      console.error("   Make sure you're in the tool-executor-mcp directory");
+      console.error("   Make sure you're in the claudikins-tool-executor directory");
       process.exit(1);
     }
 

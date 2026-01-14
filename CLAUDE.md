@@ -1,6 +1,8 @@
-# CLAUDE.md
+# Claudikins - Tool Executor and Sandbox
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+**Part of the Claudikins framework** — a modular ecosystem for Claude Code extensions.
 
 ## Project Status
 
@@ -18,7 +20,7 @@ Reduces Claude Code context consumption from ~50k tokens to ~1.1k tokens by not 
 ## Architecture
 
 ```
-Claude Code → tool_executor MCP → Sandbox Runtime → All other MCPs
+Claude Code → Claudikins Tool Executor → Sandbox Runtime → All other MCPs
                     │
                     └── search_tools uses Serena for semantic search
 ```
@@ -82,7 +84,7 @@ This MCP server is configured in `~/.claude.json` under the `mcpServers` key:
     "tool-executor": {
       "type": "stdio",
       "command": "node",
-      "args": ["/path/to/tool-executor-mcp/dist/index.js"],
+      "args": ["/path/to/claudikins-tool-executor/dist/index.js"],
       "env": {
         "GEMINI_API_KEY": "...",
         "APIFY_TOKEN": "..."

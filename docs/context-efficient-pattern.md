@@ -1,6 +1,6 @@
 # Context-Efficient Pattern
 
-tool-executor-mcp automatically manages context by saving large MCP responses to disk and returning slim references.
+Claudikins Tool Executor automatically manages context by saving large MCP responses to disk and returning slim references.
 
 ## How It Works
 

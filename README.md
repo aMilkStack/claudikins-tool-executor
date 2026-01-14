@@ -1,41 +1,6 @@
-# Tool Executor
-  1. search_tools - Semantic Discovery
+# Claudikins - Tool Executor and Sandbox
 
-  - Serena-powered semantic search (BM25 fallback)
-  - Returns minimal results: name, server, one-liner description
-  - Pagination support (limit, offset, has_more)
-  - Source tracking (Serena vs local fallback)
-
-  2. get_tool_schema - On-Demand Schema
-
-  - Fetches full schema only when needed
-  - Returns: name, server, full description, inputSchema, example, notes
-  - Suggests using search_tools first if tool not found
-
-  3. execute_code - Full TypeScript Sandbox
-
-  MCP Client Proxies:
-  await serena.find_symbol({ name_path: "Foo" })
-  await gemini.generate_content({ prompt: "..." })
-  - Lazy connects on first use
-  - Auto-saves large responses to workspace/mcp-results/
-  - Returns references: { _savedTo: "...", _preview: "..." }
-
-  Workspace API:
-  workspace.read/write/append/delete     // text
-  workspace.readJSON/writeJSON           // JSON  
-  workspace.readBuffer/writeBuffer       // binary
-  workspace.list/glob/mkdir/exists/stat  // directories
-  workspace.cleanupMcpResults(hours)     // maintenance
-  - Path traversal protection
-  - Scoped to ./workspace/
-
-  Execution Features:
-  - Console capture (log/info/warn/error/debug)
-  - Configurable timeout (default 30s)
-  - Stack traces on errors
-  - Output summarization (truncates if >1500 chars)
-  - Audit logging of all MCP calls
+**Part of the Claudikins framework** — A wrapper pattern for consolidating multiple MCP servers into a single, context-efficient interface.
 
 ## Why?
 
@@ -57,7 +22,7 @@ Instead of loading all tool schemas upfront, the wrapper exposes three tools:
 3. **`execute_code`** — Run TypeScript with pre-connected MCP clients
 
 ```
-Claude Code → tool_executor MCP → Sandbox Runtime → Your MCP servers
+Claude Code → Claudikins Tool Executor → Sandbox Runtime → Your MCP servers
                     │
                     └── search_tools uses Serena for semantic search
                         (separate instance from the sandbox Serena)
@@ -79,8 +44,8 @@ They're intentionally separate: one finds tools, the other analyses your codebas
 ### Setup
 
 ```bash
-git clone https://github.com/aMilkStack/tool-executor-mcp.git
-cd tool-executor-mcp
+git clone https://github.com/aMilkStack/claudikins-tool-executor.git
+cd claudikins-tool-executor
 npm install
 npm run build
 ```
@@ -95,7 +60,7 @@ Add to `~/.claude.json` under the `mcpServers` key:
     "tool-executor": {
       "type": "stdio",
       "command": "node",
-      "args": ["/absolute/path/to/tool-executor-mcp/dist/index.js"],
+      "args": ["/absolute/path/to/claudikins-tool-executor/dist/index.js"],
       "env": {
         "GEMINI_API_KEY": "your-key-here",
         "APIFY_TOKEN": "your-token-here"
@@ -332,7 +297,7 @@ npm test             # Run tests
 **Solutions**:
 1. Pass longer timeout: `execute_code({ code: "...", timeout: 120000 })`
 2. Break long operations into smaller chunks
-3. Check if MCP server is responding: run `tool-executor doctor`
+3. Check if MCP server is responding: run `claudikins doctor`
 
 ### MCP connection fails
 

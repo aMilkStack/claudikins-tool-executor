@@ -1,6 +1,6 @@
 # Alignment with Anthropic Tool Patterns
 
-tool-executor-mcp implements patterns that align with Anthropic's recommended approaches for tool use and code execution.
+Claudikins Tool Executor implements patterns that align with Anthropic's recommended approaches for tool use and code execution.
 
 ## Pattern Comparison
 
@@ -51,7 +51,7 @@ Our `execute_code` tool does exactly this - Claude writes TypeScript that orches
 ## Why Both Exist
 
 - **Anthropic API**: For developers building with raw API calls
-- **tool-executor-mcp**: For Claude Code CLI users who want the same patterns
+- **Claudikins Tool Executor**: For Claude Code CLI users who want the same patterns
 
 We're CLI-native; they're API-native. Same patterns, different transports.
 
