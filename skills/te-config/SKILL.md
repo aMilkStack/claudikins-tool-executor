@@ -141,7 +141,6 @@ Environment variables use `${VAR_NAME}` syntax in config:
 |--------|----------|---------|
 | gemini | `GEMINI_API_KEY` | Google AI API key |
 | apify | `APIFY_TOKEN` | Apify platform token |
-| nanoBanana | `GEMINI_API_KEY` | Shares Gemini key |
 
 ### Setting Variables
 
@@ -170,13 +169,11 @@ export GEMINI_API_KEY="your-key-here"
 
 ```
 registry/
-├── ai-models/gemini/          # Gemini tools
+├── ai-models/gemini/          # Gemini tools (AI queries, images, diagrams)
 ├── code-nav/serena/           # Serena tools
 ├── knowledge/context7/        # Context7 tools
 ├── knowledge/notebooklm/      # NotebookLM tools
-├── misc/nanoBanana/           # Nano Banana tools
 ├── reasoning/sequentialThinking/
-├── ui/mermaid/                # Mermaid tools
 ├── ui/shadcn/                 # shadcn tools
 └── web/apify/                 # Apify tools
 ```
@@ -241,10 +238,8 @@ These are the built-in defaults if no config file exists:
 | gemini | npx | @rlabs-inc/gemini-mcp |
 | notebooklm | npx | notebooklm-mcp |
 | shadcn | npx | shadcn-ui-mcp-server |
-| mermaid | npx | mcp-mermaid |
 | apify | npx | @apify/actors-mcp-server |
 | sequentialThinking | npx | @modelcontextprotocol/server-sequential-thinking |
-| nanoBanana | uvx | nanobanana-mcp-server@latest |
 
 ## Source Code Reference
 

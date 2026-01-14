@@ -5,7 +5,7 @@ description: Use this skill when users ask "how does tool executor work", "how t
 
 # Claudikins Tool Executor Guide
 
-The Tool Executor wraps 9 MCP servers into 3 context-efficient tools. Master this workflow to reduce token consumption from ~50k to ~1.1k.
+The Tool Executor wraps 7 MCP servers into 3 context-efficient tools. Master this workflow to reduce token consumption from ~50k to ~1.1k.
 
 ## The Three-Tool Workflow
 
@@ -36,7 +36,7 @@ Before calling a tool, get its complete specification:
 
 ```typescript
 const schema = await mcp__tool-executor__get_tool_schema({
-  name: "generate_mermaid_diagram"
+  name: "gemini_generateContent"
 });
 // Returns: { name, server, description, inputSchema, example, notes }
 ```
@@ -53,11 +53,10 @@ Run TypeScript in the sandbox with pre-connected MCP clients:
 ```typescript
 const result = await mcp__tool-executor__execute_code({
   code: `
-    const diagram = await mermaid.generate_mermaid_diagram({
-      diagram: "graph TD A[Start] --> B[End]",
-      format: "png"
+    const response = await gemini.gemini_generateContent({
+      prompt: "Create a flowchart description for user authentication"
     });
-    console.log("Generated:", diagram._savedTo || "inline");
+    console.log("Generated:", response._savedTo || "inline");
   `,
   timeout: 30000
 });
@@ -71,13 +70,11 @@ All clients are pre-connected and available as globals:
 |--------|---------|
 | `serena` | Semantic code search (REQUIRED - cannot be removed) |
 | `context7` | Library documentation lookup |
-| `gemini` | AI model queries |
+| `gemini` | AI model queries, image generation, diagrams |
 | `notebooklm` | Research and notes |
 | `shadcn` | UI component generation |
-| `mermaid` | Diagram generation |
 | `apify` | Web scraping |
 | `sequentialThinking` | Reasoning chains |
-| `nanoBanana` | Miscellaneous utilities |
 
 ### Client Usage Pattern
 
@@ -185,19 +182,18 @@ await mcp__tool-executor__execute_code({
 
 ## Common Patterns
 
-### Generate and Save Diagram
+### Generate Content with Gemini
 ```typescript
-const diagram = await mermaid.generate_mermaid_diagram({
-  diagram: `
-    flowchart TD
-      A[User Request] --> B{Search Tools}
-      B --> C[Get Schema]
-      C --> D[Execute Code]
-  `,
-  format: "png"
+const response = await gemini.gemini_generateContent({
+  prompt: `Create a detailed flowchart description:
+    - User submits request
+    - Search for relevant tools
+    - Get tool schema
+    - Execute code in sandbox
+  `
 });
-await workspace.writeBuffer("flow.png", Buffer.from(diagram.content[0].data, "base64"));
-console.log("Saved flow.png");
+await workspace.write("flowchart.md", response.content[0].text);
+console.log("Saved flowchart.md");
 ```
 
 ### Search Codebase with Serena

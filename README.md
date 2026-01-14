@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="banner.png" alt="Claudikins - Semantic Discovery & Code Sandbox" width="100%">
+</p>
+
 # Claudikins - Tool Executor and Sandbox
 
 **Part of the Claudikins framework** — A wrapper pattern for consolidating multiple MCP servers into a single, context-efficient interface.
@@ -205,13 +209,13 @@ Pass any required environment variables in `~/.claude.json`:
 const tools = await search_tools({ query: "generate diagram" });
 
 // 2. Get schema if needed
-const schema = await get_tool_schema({ name: "generate_mermaid_diagram" });
+const schema = await get_tool_schema({ name: "gemini_generateContent" });
 
 // 3. Execute
 await execute_code({
   code: `
-    const result = await mermaid.generate_mermaid_diagram({
-      diagram: "graph LR; A-->B"
+    const result = await gemini.gemini_generateContent({
+      prompt: "Generate a flowchart diagram"
     });
     console.log(result);
   `
@@ -220,22 +224,20 @@ await execute_code({
 
 ## Starter Configuration
 
-This repo ships with 9 example MCP servers as a starting point:
+This repo ships with 7 example MCP servers as a starting point:
 
 | Server | Type | Tools | Purpose |
 |--------|------|-------|---------|
 | Serena | uvx | 29 | Semantic code search |
-| Gemini | npx | 37 | AI model queries |
+| Gemini | npx | 37 | AI model queries, image generation, diagrams |
 | NotebookLM | npx | 16 | Research & notes |
 | Apify | npx | 7 | Web scraping |
-| nanoBanana | uvx | 4 | Misc utilities |
 | Context7 | npx | 2 | Library documentation |
-| Mermaid | npx | 2 | Diagram generation |
 | shadcn | npx | 4 | UI components |
 | sequentialThinking | npx | 1 | Reasoning chains |
 
 **Required env vars for starter config:**
-- `GEMINI_API_KEY` — for Gemini and nanoBanana
+- `GEMINI_API_KEY` — for Gemini
 - `APIFY_TOKEN` — for Apify
 
 ## Registry Structure
@@ -287,7 +289,7 @@ npm test             # Run tests
 
 **Solutions**:
 1. Check registry files exist: `ls registry/*/*`
-2. Verify YAML format: `cat registry/ui/mermaid/generate_mermaid_diagram.yaml`
+2. Verify YAML format: `cat registry/ai-models/gemini/gemini_generateContent.yaml`
 3. Restart Claude Code to reinitialise Serena index
 
 ### execute_code timeout
@@ -304,7 +306,7 @@ npm test             # Run tests
 **Symptom**: "Failed to connect" errors in logs
 
 **Solutions**:
-1. Check the MCP server runs standalone: `npx -y mcp-mermaid`
+1. Check the MCP server runs standalone: `npx -y @rlabs-inc/gemini-mcp`
 2. Verify environment variables are set in `mcp.json`
 3. Check for port conflicts or firewall issues
 

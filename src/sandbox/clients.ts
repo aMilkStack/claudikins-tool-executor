@@ -7,21 +7,32 @@ const IDLE_TIMEOUT = 3 * 60 * 1000; // 3 minutes
 
 /**
  * Default MCP server configurations (used when no config file found)
+ * NOTE: env vars are specified as keys, resolved at connect time (not module load time)
+ * This ensures dotenv has loaded before we read process.env
  */
-const DEFAULT_CONFIGS: ServerConfig[] = [
+const DEFAULT_CONFIGS: Omit<ServerConfig, "env">[] & { envKeys?: string[] }[] = [
   // NPX servers (Node.js)
   { name: "notebooklm", displayName: "NotebookLM", command: "npx", args: ["-y", "notebooklm-mcp"] },
   { name: "sequentialThinking", displayName: "Sequential Thinking", command: "npx", args: ["-y", "@modelcontextprotocol/server-sequential-thinking"] },
   { name: "context7", displayName: "Context7", command: "npx", args: ["-y", "@upstash/context7-mcp"] },
-  { name: "gemini", displayName: "Gemini", command: "npx", args: ["-y", "@rlabs-inc/gemini-mcp"], env: { GEMINI_API_KEY: process.env.GEMINI_API_KEY || "" } },
+  { name: "gemini", displayName: "Gemini", command: "npx", args: ["-y", "@rlabs-inc/gemini-mcp"], envKeys: ["GEMINI_API_KEY"] },
   { name: "shadcn", displayName: "shadcn", command: "npx", args: ["-y", "shadcn-ui-mcp-server"] },
-  { name: "mermaid", displayName: "Mermaid", command: "npx", args: ["-y", "mcp-mermaid"] },
-  { name: "apify", displayName: "Apify", command: "npx", args: ["-y", "@apify/actors-mcp-server"], env: { APIFY_TOKEN: process.env.APIFY_TOKEN || "" } },
+  { name: "apify", displayName: "Apify", command: "npx", args: ["-y", "@apify/actors-mcp-server"], envKeys: ["APIFY_TOKEN"] },
 
   // UVX servers (Python)
   { name: "serena", displayName: "Serena", command: "uvx", args: ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server"] },
-  { name: "nanoBanana", displayName: "Nano Banana", command: "uvx", args: ["nanobanana-mcp-server@latest"], env: { GEMINI_API_KEY: process.env.GEMINI_API_KEY || "" } },
 ];
+
+/**
+ * Resolve envKeys to actual env values at runtime (after dotenv loads)
+ */
+function resolveEnvKeys(envKeys?: string[]): Record<string, string> | undefined {
+  if (!envKeys || envKeys.length === 0) return undefined;
+  return envKeys.reduce((acc, key) => {
+    acc[key] = process.env[key] || "";
+    return acc;
+  }, {} as Record<string, string>);
+}
 
 /**
  * Load server configs from file or use defaults
@@ -41,13 +52,40 @@ function loadServerConfigs(): ServerConfig[] {
   }
 
   console.error("No config file found, using default servers");
-  return DEFAULT_CONFIGS;
+  // Resolve envKeys to env at runtime (dotenv should be loaded by now)
+  return DEFAULT_CONFIGS.map(c => ({
+    name: c.name as keyof MCPClients,
+    displayName: c.displayName,
+    command: c.command,
+    args: c.args,
+    env: resolveEnvKeys((c as { envKeys?: string[] }).envKeys),
+  }));
 }
 
 /**
- * MCP server configurations - loaded from config file or defaults
+ * MCP server configurations - lazily loaded to ensure dotenv has run first
  */
-export const SERVER_CONFIGS: ServerConfig[] = loadServerConfigs();
+let _serverConfigs: ServerConfig[] | null = null;
+
+export function getServerConfigs(): ServerConfig[] {
+  if (!_serverConfigs) {
+    _serverConfigs = loadServerConfigs();
+  }
+  return _serverConfigs;
+}
+
+// For backwards compatibility - proxy that lazily loads configs
+export const SERVER_CONFIGS: ServerConfig[] = new Proxy([] as ServerConfig[], {
+  get(_, prop) {
+    const configs = getServerConfigs();
+    const value = (configs as unknown as Record<string | symbol, unknown>)[prop];
+    // Bind methods to the actual configs array
+    if (typeof value === "function") {
+      return (value as (...args: unknown[]) => unknown).bind(configs);
+    }
+    return value;
+  },
+});
 
 /**
  * Client state tracking for lazy loading and lifecycle management
@@ -227,6 +265,9 @@ let cleanupInterval: NodeJS.Timeout | null = null;
 export function startLifecycleManagement(): void {
   if (cleanupInterval) return;
 
+  // Initialize client states (deferred to ensure dotenv has loaded)
+  initClientStates();
+
   // Check for idle clients every minute
   cleanupInterval = setInterval(cleanupIdleClients, 60_000);
 
@@ -255,5 +296,4 @@ export function stopLifecycleManagement(): void {
   }
 }
 
-// Auto-initialize client states at module load
-initClientStates();
+// Client states initialized lazily in startLifecycleManagement()

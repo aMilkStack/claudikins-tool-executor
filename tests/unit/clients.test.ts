@@ -12,8 +12,8 @@ describe("clients module", () => {
   });
 
   describe("SERVER_CONFIGS", () => {
-    it("should have 9 configured servers", () => {
-      expect(SERVER_CONFIGS.length).toBe(9);
+    it("should have 7 configured servers", () => {
+      expect(SERVER_CONFIGS.length).toBe(7);
     });
 
     it("should have required fields for each server", () => {
@@ -30,7 +30,7 @@ describe("clients module", () => {
       const names = SERVER_CONFIGS.map(c => c.name);
       expect(names).toContain("serena");
       expect(names).toContain("gemini");
-      expect(names).toContain("mermaid");
+      expect(names).toContain("shadcn");
       expect(names).toContain("context7");
     });
   });
@@ -55,8 +55,8 @@ describe("clients module", () => {
 
   describe("config loading", () => {
     it("should fall back to defaults when no config file", () => {
-      // Default behavior - should have 9 servers
-      expect(SERVER_CONFIGS.length).toBe(9);
+      // Default behavior - should have 7 servers
+      expect(SERVER_CONFIGS.length).toBe(7);
     });
   });
 

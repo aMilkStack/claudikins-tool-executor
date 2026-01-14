@@ -1,4 +1,11 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+import { dirname, resolve } from "path";
+import { fileURLToPath } from "url";
+
+// Load .env from module directory (not cwd) for plugin portability
+const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: resolve(__dirname, "..", ".env") });
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { MAX_LOG_CHARS } from "./constants.js";
@@ -38,7 +45,7 @@ Available categories: game-dev, code-nav, knowledge, ai-models, web, source-cont
 Example queries:
 - "godot scene" - tools for Godot game development
 - "semantic code search" - Serena code navigation
-- "generate diagram" - Mermaid diagram tools
+- "generate diagram" - Gemini image/diagram generation
 - "fetch webpage" - HTTP fetch tools`,
     inputSchema: SearchToolsInputSchema,
     annotations: {
@@ -61,7 +68,7 @@ server.registerTool(
     title: "Get Tool Schema",
     description: `Get the full inputSchema for a specific tool. Use after search_tools to get parameter details before calling execute_code.
 
-Example: get_tool_schema("generate_mermaid_diagram") - returns full schema with all parameters, types, enums, etc.`,
+Example: get_tool_schema("gemini_generateContent") - returns full schema with all parameters, types, enums, etc.`,
     inputSchema: GetToolSchemaInputSchema,
     annotations: {
       readOnlyHint: true,
@@ -95,7 +102,7 @@ If you don't know which tool to use, ALWAYS search first.
 **IMPORTANT: Context-Efficient Pattern**
 MCP tool responses are auto-saved to workspace when large. Your code receives a reference:
 \`\`\`typescript
-const result = await mermaid.generate_diagram({...});
+const result = await gemini.gemini_generateContent({...});
 // If large: { _savedTo: "mcp-results/123.json", _preview: "..." }
 // Read full result: await workspace.readJSON(result._savedTo)
 \`\`\`

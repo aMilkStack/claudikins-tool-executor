@@ -9,11 +9,9 @@ export interface MCPClients {
   context7: Client | null;
   notebooklm: Client | null;
   shadcn: Client | null;
-  mermaid: Client | null;
   gemini: Client | null;
   apify: Client | null;
   sequentialThinking: Client | null;
-  nanoBanana: Client | null;
 }
 
 /**

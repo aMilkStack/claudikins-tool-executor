@@ -4,11 +4,11 @@ import { searchTools, loadToolDefinition } from "../../src/search.js";
 describe("search module", () => {
   describe("loadToolDefinition", () => {
     it("should load a valid YAML tool definition", async () => {
-      const tool = await loadToolDefinition("registry/ui/mermaid/generate_mermaid_diagram.yaml");
+      const tool = await loadToolDefinition("registry/ui/shadcn/list_shadcn_components.yaml");
 
       expect(tool).toBeDefined();
-      expect(tool?.name).toBe("generate_mermaid_diagram");
-      expect(tool?.server).toBe("mermaid");
+      expect(tool?.name).toBe("list_shadcn_components");
+      expect(tool?.server).toBe("shadcn");
       expect(tool?.inputSchema).toBeDefined();
     });
 
@@ -26,7 +26,7 @@ describe("search module", () => {
 
   describe("searchTools", () => {
     it("should return results for valid query", async () => {
-      const response = await searchTools("mermaid diagram", 5);
+      const response = await searchTools("shadcn ui component", 5);
 
       expect(response.results).toBeDefined();
       expect(response.results.length).toBeGreaterThan(0);

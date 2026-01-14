@@ -31,12 +31,10 @@ const SERVERS: ServerConfig[] = [
   { name: "context7", displayName: "Context7", command: "npx", args: ["-y", "@upstash/context7-mcp"], category: "knowledge" },
   { name: "gemini", displayName: "Gemini", command: "npx", args: ["-y", "@rlabs-inc/gemini-mcp"], category: "ai-models", env: { GEMINI_API_KEY: process.env.GEMINI_API_KEY || "" } },
   { name: "shadcn", displayName: "shadcn", command: "npx", args: ["-y", "shadcn-ui-mcp-server"], category: "ui" },
-  { name: "mermaid", displayName: "Mermaid", command: "npx", args: ["-y", "mcp-mermaid"], category: "ui" },
   { name: "apify", displayName: "Apify", command: "npx", args: ["-y", "@apify/actors-mcp-server"], category: "web", env: { APIFY_TOKEN: process.env.APIFY_TOKEN || "" } },
 
   // UVX servers (Python)
   { name: "serena", displayName: "Serena", command: "uvx", args: ["--from", "git+https://github.com/oraios/serena", "serena", "start-mcp-server"], category: "code-nav" },
-  { name: "nanoBanana", displayName: "Nano Banana", command: "uvx", args: ["nanobanana-mcp-server@latest"], category: "misc", env: { GEMINI_API_KEY: process.env.GEMINI_API_KEY || "" } },
 ];
 
 const REGISTRY_ROOT = join(process.cwd(), "registry");

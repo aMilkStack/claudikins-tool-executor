@@ -42,7 +42,7 @@ src/
     ├── clients.ts     # Lazy MCP client connections + lifecycle
     ├── runtime.ts     # Code execution with timeout
     └── workspace.ts   # Persistent file storage API
-registry/              # 103 tool definitions (YAML) by category
+registry/              # 96 tool definitions (YAML) by category
 workspace/             # Persistent state between executions
 scripts/
 └── extract-schemas.ts # Generate registry from live MCPs
@@ -51,19 +51,17 @@ tests/
 └── integration/       # Execute code tests
 ```
 
-## Wrapped MCP Servers (9)
+## Wrapped MCP Servers (7)
 
 | Server | Type | Purpose |
 |--------|------|---------|
 | serena | uvx | Semantic code search |
 | context7 | npx | Library documentation |
-| gemini | npx | AI model queries |
+| gemini | npx | AI model queries, image generation, diagrams |
 | notebooklm | npx | Research/notes |
 | shadcn | npx | UI components |
-| mermaid | npx | Diagram generation |
 | apify | npx | Web scraping |
 | sequentialThinking | npx | Reasoning chains |
-| nanoBanana | uvx | Misc utilities |
 
 ## Development Commands
 

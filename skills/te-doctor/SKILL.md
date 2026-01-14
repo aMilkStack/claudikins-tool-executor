@@ -101,7 +101,7 @@ Both Serena instances must be working:
 ```bash
 # Test semantic search
 search_tools({ query: "diagram", limit: 3 })
-# Should return mermaid tools
+# Should return gemini or shadcn tools
 ```
 
 **Sandbox Serena** (available in execute_code):
