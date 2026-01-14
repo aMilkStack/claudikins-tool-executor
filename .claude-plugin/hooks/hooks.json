@@ -1,0 +1,17 @@
+{
+  "description": "Enforces MCP tool discovery before defaulting to basic tools",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/search-tools-activation.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
