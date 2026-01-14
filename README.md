@@ -1,6 +1,25 @@
-# Tool Executor MCP
+# Tool Executor
+  1. search_tools - Semantic Discovery
 
-A wrapper pattern for consolidating multiple MCP servers into a single, context-efficient interface.
+  - Serena-powered semantic search (BM25 fallback)
+  - Returns minimal results: name, server, one-liner description
+  - Pagination support (limit, offset, has_more)
+  - Source tracking (Serena vs local fallback)
+
+  2. get_tool_schema - On-Demand Schema
+
+  - Fetches full schema only when needed
+  - Returns: name, server, full description, inputSchema, example, notes
+  - Suggests using search_tools first if tool not found
+
+  3. execute_code - Full TypeScript Sandbox
+
+  MCP Client Proxies:
+  await serena.find_symbol({ name_path: "Foo" })
+  await gemini.generate_content({ prompt: "..." })
+  - Lazy connects on first use
+  - Auto-saves large responses to workspace/mcp-results/
+  - Returns references: { _savedTo: "...", _preview: "..." }
 
 ## Why?
 
