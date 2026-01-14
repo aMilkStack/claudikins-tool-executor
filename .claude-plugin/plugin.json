@@ -1,9 +1,8 @@
 {
   "name": "claudikins-tool-executor",
   "version": "1.0.0",
-  "description": "Plugin for the Claudikins Tool Executor MCP - guides usage, configuration, and diagnostics",
+  "description": "Wraps 7 MCP servers into 3 context-efficient tools. Reduces token consumption from ~50k to ~1.1k by lazy-loading tool schemas on demand via semantic search.",
   "author": {
-    "name": "Ethan Lee",
-    "email": "ethan@claudikins.dev"
+    "name": "Ethan Lee"
   }
 }
