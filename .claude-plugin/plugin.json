@@ -1,7 +1,7 @@
 {
   "name": "claudikins-tool-executor",
   "version": "1.0.0",
-  "description": "Wraps 7 MCP servers into 3 context-efficient tools. Reduces token consumption from ~50k to ~1.1k by lazy-loading tool schemas on demand via semantic search.",
+  "description": "MCP wrapper that consolidates 100+ tools into just 3, using semantic search for on-demand discovery and sandboxed TypeScript execution. Reduces context usage from ~25% to under 1%.",
   "author": {
     "name": "Ethan Lee"
   }
