@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "tool-executor": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/dist/index.js"],
+      "env": {
+        "GEMINI_API_KEY": "${GEMINI_API_KEY}",
+        "APIFY_TOKEN": "${APIFY_TOKEN}"
+      }
+    }
+  }
+}

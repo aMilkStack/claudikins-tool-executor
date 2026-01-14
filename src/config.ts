@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { readFileSync, existsSync } from "fs";
-import { resolve } from "path";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+
+// Resolve config relative to module location (not cwd) for plugin portability
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const ServerConfigSchema = z.object({
   name: z.string().min(1),
@@ -53,7 +57,7 @@ function expandEnvVarsInObject(obj: unknown): unknown {
   return obj;
 }
 
-export function findConfigFile(startDir: string = process.cwd()): string | null {
+export function findConfigFile(startDir: string = resolve(__dirname, "..")): string | null {
   for (const filename of CONFIG_FILENAMES) {
     const filepath = resolve(startDir, filename);
     if (existsSync(filepath)) {

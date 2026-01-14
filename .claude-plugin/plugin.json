@@ -1,0 +1,9 @@
+{
+  "name": "claudikins-tool-executor",
+  "version": "1.0.0",
+  "description": "Plugin for the Claudikins Tool Executor MCP - guides usage, configuration, and diagnostics",
+  "author": {
+    "name": "Ethan Lee",
+    "email": "ethan@claudikins.dev"
+  }
+}

@@ -1,9 +1,12 @@
 import { readFile, writeFile, appendFile, unlink, readdir, mkdir as fsMkdir, stat as fsStat } from "node:fs/promises";
-import { join, resolve, normalize } from "node:path";
+import { join, resolve, normalize, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { glob as globFs } from "glob";
 import { MCP_RESULTS_DIR } from "../constants.js";
 
-const WORKSPACE_ROOT = resolve(process.cwd(), "workspace");
+// Resolve workspace relative to module location (not cwd) for plugin portability
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const WORKSPACE_ROOT = resolve(__dirname, "..", "..", "workspace");
 
 /**
  * Resolve a path within the workspace, blocking traversal attacks
