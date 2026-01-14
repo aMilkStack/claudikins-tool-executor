@@ -21,6 +21,22 @@
   - Auto-saves large responses to workspace/mcp-results/
   - Returns references: { _savedTo: "...", _preview: "..." }
 
+  Workspace API:
+  workspace.read/write/append/delete     // text
+  workspace.readJSON/writeJSON           // JSON  
+  workspace.readBuffer/writeBuffer       // binary
+  workspace.list/glob/mkdir/exists/stat  // directories
+  workspace.cleanupMcpResults(hours)     // maintenance
+  - Path traversal protection
+  - Scoped to ./workspace/
+
+  Execution Features:
+  - Console capture (log/info/warn/error/debug)
+  - Configurable timeout (default 30s)
+  - Stack traces on errors
+  - Output summarization (truncates if >1500 chars)
+  - Audit logging of all MCP calls
+
 ## Why?
 
 **Context is precious.** Loading MCP servers directly into Claude Code consumes tokens for every tool definition — often 25%+ of your context window before you've even started.
