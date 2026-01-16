@@ -1,46 +1,44 @@
 <p align="center">
-  <img src="banner.png" alt="Claudikins Tool Executor" width="100%">
+  <img src="banner.png" alt="Tool Executor - Programmatic MCP Execution for Claude Code" width="100%">
 </p>
 
-<h1 align="center">Claudikins Tool Executor</h1>
+<p align="center">
+  <a href="https://github.com/aMilkStack/claudikins-tool-executor/actions"><img src="https://img.shields.io/github/actions/workflow/status/aMilkStack/claudikins-tool-executor/ci.yml?style=flat-square" alt="Build Status"></a>
+  <a href="https://www.npmjs.com/package/claudikins-tool-executor"><img src="https://img.shields.io/npm/v/claudikins-tool-executor?style=flat-square" alt="npm version"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License"></a>
+</p>
+
+<h1 align="center">Tool Executor</h1>
 
 <p align="center">
-  <strong>Slim tool definitions. Auto-compressed responses. Context efficiency on both ends.</strong>
+  <strong>Programmatic MCP Execution for Claude Code</strong><br>
+  <em>The API has batched tool calling. Claude Code gets serial execution. This bridges the gap.</em>
 </p>
 
 <p align="center">
   <a href="#quick-start">Quick Start</a> •
-  <a href="#the-3-tools">The 3 Tools</a> •
+  <a href="#the-3-primitives">The 3 Primitives</a> •
+  <a href="#how-it-works">How It Works</a> •
   <a href="#configuration">Configuration</a> •
-  <a href="#wrapped-servers">Wrapped Servers</a>
+  <a href="#roadmap">Roadmap</a>
 </p>
 
 ---
 
-## The Problem
+Anthropic's API users get [programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling) - Claude writes code, executes N tools in a sandbox, returns once. Claude Code users get serial execution and lazy loading. Tool Executor brings the API pattern to Claude Code.
 
-Every MCP server you add to Claude Code consumes context tokens for tool definitions. Add a few servers and suddenly **25% of your context window is gone** before you've written a single prompt.
+| Aspect | Claude Code 2.1.7 | Tool Executor |
+|--------|------------------|---------------|
+| **Execution** | Serial (pause per tool) | Batched (N tools, 1 return) |
+| **Output Handling** | Dumps to context | Auto-saves to workspace |
+| **Tool Awareness** | "Search available" | Hook-injected guidance |
+| **Token Cost (10 tools)** | ~48,000 tokens | ~1,100 tokens |
 
-And when those MCP tools return large responses? Straight into context. A web scrape, a code analysis, an image generation - all eating your precious tokens.
-
-## The Solution
-
-Tool Executor is a **reverse proxy for MCP servers**. Instead of exposing 100+ tool schemas directly, it provides 3 context-efficient tools with semantic search and automatic response management.
-
-| Setup | Tools Loaded | Tokens | Context Used |
-|-------|-------------|--------|--------------|
-| Direct MCP (9 servers) | 102 | ~50,000 | 25% |
-| **Tool Executor** | **3** | **~1,100** | **0.5%** |
-
-**98% reduction in tool definition overhead.**
-
-But that's only half the story. Large MCP responses are automatically saved to workspace files, returning only a tiny reference. Your context stays lean even when tools return massive payloads.
+98% reduction. Same tools. Different execution model.
 
 ---
 
 ## Quick Start
-
-### Install via Claude Code Plugin
 
 ```bash
 # Add the Claudikins marketplace
@@ -50,148 +48,150 @@ But that's only half the story. Large MCP responses are automatically saved to w
 /plugin install claudikins-tool-executor
 ```
 
-Restart Claude Code. You now have access to `search_tools`, `get_tool_schema`, and `execute_code`.
+Restart Claude Code. Done.
 
-### First Search
+### First Workflow
 
 ```
-Use search_tools to find image generation tools
+Search for image generation tools, then generate a robot writing documentation.
 ```
 
-### First Execution
+Claude will:
+1. Use `search_tools` to find relevant tools
+2. Use `get_tool_schema` to load the exact parameters
+3. Use `execute_code` to run the generation in one shot
+
+---
+
+## The 3 Primitives
+
+Tool Executor exposes exactly 3 tools. Everything else happens inside the sandbox.
+
+### `search_tools` - Find by Intent
+
+Semantic search across 87+ wrapped tools. Powered by Serena embeddings with BM25 fallback.
+
+```json
+{ "query": "generate images", "limit": 5 }
+```
+
+Returns slim results: name, server, description. No schemas loaded until you need them.
+
+### `get_tool_schema` - Load on Demand
+
+Fetch the full JSON Schema for a specific tool before calling it.
+
+```json
+{ "name": "gemini_generateContent" }
+```
+
+Returns the complete `inputSchema` plus usage examples.
+
+### `execute_code` - Run in Sandbox
+
+TypeScript execution with pre-connected MCP clients. Write code that calls multiple tools, loops, branches - returns once.
 
 ```typescript
-// After getting the schema for gemini-generate-image
-await gemini["gemini-generate-image"]({
+const result = await gemini["gemini_generateContent"]({
   prompt: "A robot writing documentation",
   aspectRatio: "16:9"
 });
-```
 
----
-
-## The 3 Tools
-
-### 1. `search_tools` - Discover What's Available
-
-Semantic search across all wrapped MCP servers. Find tools without loading their schemas.
-
-**Input:**
-```json
-{
-  "query": "image generation",
-  "limit": 5,
-  "offset": 0
-}
-```
-
-**Output:**
-```json
-{
-  "results": [
-    { "name": "gemini-generate-image", "server": "gemini", "description": "Generate images..." },
-    { "name": "gemini-generate-video", "server": "gemini", "description": "Generate videos..." }
-  ],
-  "count": 2,
-  "has_more": false
-}
-```
-
-**Example queries:**
-- `"semantic code search"` - Find Serena code navigation tools
-- `"web scraping"` - Find Apify tools
-- `"UI components"` - Find shadcn tools
-
----
-
-### 2. `get_tool_schema` - Get Full Parameters
-
-Once you've found a tool, fetch its complete schema before calling it.
-
-**Input:**
-```json
-{
-  "name": "gemini-generate-image"
-}
-```
-
-**Output:**
-```json
-{
-  "name": "gemini-generate-image",
-  "server": "gemini",
-  "description": "Full description...",
-  "inputSchema": { /* JSON Schema */ },
-  "example": "await gemini[\"gemini-generate-image\"]({...})"
+// Large responses auto-save to workspace
+if (result._savedTo) {
+  console.log(`Saved to: ${result._savedTo}`);
 }
 ```
 
 ---
 
-### 3. `execute_code` - Run TypeScript with MCP Access
+## How It Works
 
-Execute TypeScript/JavaScript with pre-connected MCP clients and a workspace API.
-
-**Input:**
-```json
-{
-  "code": "const result = await gemini[\"gemini-query\"]({ prompt: \"Hello\" }); console.log(result);",
-  "timeout": 30000
-}
+```
+┌─────────────────────────────────────────────────────────────┐
+│                       Claude Code                            │
+└─────────────────────────┬───────────────────────────────────┘
+                          │ 3 tools (~1.1k tokens)
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                     Tool Executor                            │
+│  ┌─────────────┐  ┌──────────────┐  ┌─────────────────┐     │
+│  │search_tools │  │get_tool_schema│  │  execute_code   │     │
+│  └──────┬──────┘  └──────┬───────┘  └────────┬────────┘     │
+│         │                │                    │              │
+│         ▼                ▼                    ▼              │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │              Registry (87 tool definitions)           │   │
+│  │         Serena semantic search + BM25 fallback        │   │
+│  └──────────────────────────────────────────────────────┘   │
+│                                                              │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │                   Sandbox Runtime                     │   │
+│  │   • Lazy MCP client connections (pooled)             │   │
+│  │   • Auto-save large responses (>200 chars)           │   │
+│  │   • TypeScript execution with timeout                │   │
+│  └──────────────────────┬───────────────────────────────┘   │
+└─────────────────────────┼───────────────────────────────────┘
+                          │
+        ┌─────────────────┼─────────────────┐
+        ▼                 ▼                 ▼
+   ┌─────────┐      ┌─────────┐       ┌─────────┐
+   │ Gemini  │      │ Serena  │       │  Apify  │  ... (7 servers)
+   └─────────┘      └─────────┘       └─────────┘
 ```
 
-**Available in the sandbox:**
+**The SessionStart Hook**
 
-| Global | Description |
-|--------|-------------|
-| `gemini` | Gemini AI tools (query, image gen, analysis) |
-| `serena` | Semantic code search and navigation |
-| `apify` | Web scraping and automation |
-| `context7` | Context management |
-| `notebooklm` | Notebook analysis |
-| `shadcn` | UI component tools |
-| `sequentialThinking` | Reasoning tools |
-| `workspace` | File API for persistent storage |
-| `console` | Logging (captured and returned) |
+Unlike native MCP, Tool Executor injects guidance every session. Claude knows:
+- What MCP categories exist (ai-models, code-nav, web, knowledge)
+- When to use MCP vs basic tools
+- The exact search → schema → execute workflow
 
-**Workspace API:**
-```typescript
-// Write and read files
-await workspace.write("output.txt", "Hello");
-const content = await workspace.read("output.txt");
-
-// JSON helpers
-await workspace.writeJSON("data.json", { foo: "bar" });
-const data = await workspace.readJSON("data.json");
-
-// List and check files
-const files = await workspace.list(".");
-const exists = await workspace.exists("output.txt");
-```
+No guessing. No forgetting.
 
 ---
 
-## The Auto-Save Magic
+## Workspace Auto-Save
 
-When an MCP tool returns a response larger than 200 characters, it's automatically saved to the workspace. Your code receives a reference instead of the full payload:
+MCP tools often return large payloads. Web scrapes, code analysis, generated content - all eating context.
+
+Tool Executor intercepts responses over 200 characters and saves them to workspace files. Your code receives a reference:
 
 ```typescript
-const result = await gemini["gemini-query"]({ prompt: "Explain quantum computing in detail" });
+const scrapeResult = await apify["apify_scrape"]({ url: "https://example.com" });
 
-// If response is large, result looks like:
-// { _savedTo: "mcp-results/1705312345678.json", _preview: "Quantum computing...", _size: 15234 }
+// Large response auto-saved
+// { _savedTo: "mcp-results/1705312345678.json", _preview: "...", _size: 15234 }
 
-// Read the full response only when needed:
-const fullResponse = await workspace.readJSON(result._savedTo);
+// Read when needed
+const fullData = await workspace.readJSON(scrapeResult._savedTo);
 ```
 
-**Context stays lean. Large results stay accessible.**
+Context stays lean. Data stays accessible.
+
+---
+
+## Wrapped Servers
+
+Pre-configured MCP servers available in the sandbox:
+
+| Server | Category | Tools | Purpose |
+|--------|----------|-------|---------|
+| `gemini` | ai-models | 26 | Image/video generation, queries, analysis |
+| `serena` | code-nav | 11 | Semantic code search, project navigation |
+| `apify` | web | 17 | Web scraping, actor management |
+| `context7` | knowledge | 9 | Context management |
+| `notebooklm` | knowledge | 13 | Notebook analysis |
+| `shadcn` | ui | 10 | UI component tools |
+| `sequentialThinking` | reasoning | 1 | Step-by-step reasoning |
+
+**87 tools. 3 exposed. 98% fewer tokens.**
 
 ---
 
 ## Configuration
 
-Tool Executor works out of the box with sensible defaults. For custom setups, create `tool-executor.config.json`:
+Works out of the box. For custom servers, create `tool-executor.config.json`:
 
 ```json
 {
@@ -209,9 +209,7 @@ Tool Executor works out of the box with sensible defaults. For custom setups, cr
 }
 ```
 
-**Environment Variables:**
-
-Some servers require API keys. Set them in your environment:
+Some servers need API keys:
 
 ```bash
 export GEMINI_API_KEY="your-key"
@@ -220,136 +218,47 @@ export APIFY_TOKEN="your-token"
 
 ---
 
-## Wrapped Servers
-
-Tool Executor comes pre-configured with 7 MCP servers:
-
-| Server | Category | Tools | What It Does |
-|--------|----------|-------|--------------|
-| **Gemini** | AI Models | 26 | Image/video generation, queries, analysis |
-| **Serena** | Code Nav | 11 | Semantic code search, project navigation |
-| **Apify** | Web | 17 | Web scraping, actor management |
-| **Context7** | Knowledge | 9 | Context management |
-| **NotebookLM** | Knowledge | 13 | Notebook analysis |
-| **shadcn** | UI | 10 | UI component tools |
-| **Sequential Thinking** | Reasoning | 1 | Step-by-step reasoning |
-
-**Total: 87 tools accessible through 3.**
-
----
-
-## Advanced Patterns
-
-### Chaining Tools
-
-```typescript
-// Search for relevant tools
-const searchResult = await search_tools({ query: "summarize text" });
-
-// Get the schema
-const schema = await get_tool_schema({ name: "gemini-summarize" });
-
-// Execute with full knowledge of parameters
-const summary = await gemini["gemini-summarize"]({
-  text: "Long document here...",
-  format: "bullets"
-});
-```
-
-### Working with Large Responses
-
-```typescript
-// Scrape a webpage (potentially large)
-const scrapeResult = await apify["apify-scrape"]({ url: "https://example.com" });
-
-// If auto-saved, read from workspace
-if (scrapeResult._savedTo) {
-  const fullData = await workspace.readJSON(scrapeResult._savedTo);
-  // Process fullData...
-}
-```
-
-### Persistent Analysis Workflows
-
-```typescript
-// Save intermediate results
-await workspace.writeJSON("analysis/step1.json", intermediateData);
-
-// Continue in a later execution
-const step1 = await workspace.readJSON("analysis/step1.json");
-// Build on previous work...
-```
-
----
-
 ## When NOT to Use This
 
-Tool Executor is optimised for **breadth over depth**. Consider direct MCP connections if:
+Tool Executor optimises for breadth. Skip it if:
 
-- You only use 1-2 MCP servers (overhead isn't worth it)
-- You need real-time streaming responses
-- You're building a production pipeline (use direct SDK integration)
-- You need sub-100ms latency on every call
-
----
-
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Claude Code                              │
-└─────────────────────────┬───────────────────────────────────┘
-                          │ 3 tools (~1.1k tokens)
-                          ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   Tool Executor                              │
-│  ┌─────────────┐  ┌──────────────┐  ┌─────────────────┐    │
-│  │search_tools │  │get_tool_schema│  │  execute_code   │    │
-│  └──────┬──────┘  └──────┬───────┘  └────────┬────────┘    │
-│         │                │                    │             │
-│         ▼                ▼                    ▼             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │              Registry (97 tool definitions)          │   │
-│  │         Serena semantic search + BM25 fallback       │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │                    Sandbox Runtime                   │   │
-│  │   • Lazy MCP client connections (pooled)            │   │
-│  │   • Auto-save large responses to workspace          │   │
-│  │   • TypeScript execution with timeout               │   │
-│  └──────────────────────┬──────────────────────────────┘   │
-└─────────────────────────┼───────────────────────────────────┘
-                          │
-        ┌─────────────────┼─────────────────┐
-        ▼                 ▼                 ▼
-   ┌─────────┐      ┌─────────┐       ┌─────────┐
-   │ Gemini  │      │ Serena  │       │  Apify  │  ... (7 servers)
-   └─────────┘      └─────────┘       └─────────┘
-```
+- **1-2 MCP servers only** - overhead isn't worth it
+- **Streaming responses needed** - sandbox batches, doesn't stream
+- **Production pipelines** - use direct SDK integration
+- **Sub-100ms latency required** - sandbox adds startup time
 
 ---
 
-## CLI Commands
+## Roadmap
 
-Tool Executor includes a CLI for diagnostics:
+### Developer Experience
 
-```bash
-# Check server health
-claudikins doctor
+| Feature | Why | Effort |
+|---------|-----|--------|
+| `--verbose` flag | Debug MCP connection issues | Low |
+| `--json` output | Pipe search results to jq | Low |
+| Config file docs | Clear custom server examples | Low |
 
-# Extract schemas from live servers
-claudikins extract --all
+### Technical Hardening
 
-# Initialize config file
-claudikins init
-```
+| Location | Issue | Fix |
+|----------|-------|-----|
+| `src/search.ts:363` | Linear scan O(n) | Index tools by name |
+| `src/search.ts:251` | Sequential file loading | Parallelise with Promise.all |
+
+### Community Contributions Welcome
+
+- [ ] Add `LICENSE` file (MIT declared in package.json)
+- [ ] Add `tests/` directory (Vitest configured)
+- [ ] Add `examples/` directory
+- [ ] Add `CONTRIBUTING.md`
+- [ ] Add `CHANGELOG.md`
 
 ---
 
 ## Skills & Hooks
 
-As a Claude Code plugin, Tool Executor includes:
+As a Claude Code plugin:
 
 **Skills:**
 - `/te-doctor` - Diagnose connection issues
@@ -357,30 +266,30 @@ As a Claude Code plugin, Tool Executor includes:
 - `/te-config` - Configuration help
 
 **Hooks:**
-- `SessionStart` - Initialises the tool executor
-- `UserPromptSubmit` - Activates tool discovery on relevant prompts
+- `SessionStart` - Injects tool guidance every session
+- `UserPromptSubmit` - Activates discovery on relevant prompts
 
 ---
 
-## Part of the Claudikins Framework
+## Part of Claudikins
 
-Tool Executor is one component of Claudikins, a collection of Claude Code plugins:
+Tool Executor is one component of the Claudikins framework:
 
-- **Tool Executor** - Context-efficient MCP wrapper (you are here)
-- **Automatic Context Manager** - Seamless context handoff
-- **Klaus** - Debugging with Germanic flair
+- **Tool Executor** - Programmatic MCP execution (you are here)
+- **Automatic Context Manager** - Context handoff automation
+- **Klaus** - Debugging with Germanic precision
 - **GRFP** - README generation through dual-AI analysis
 
-[View the marketplace →](https://github.com/aMilkStack/claudikins-marketplace)
+[View the marketplace](https://github.com/aMilkStack/claudikins-marketplace)
 
 ---
 
 ## License
 
-MIT
+[MIT](LICENSE)
 
 ---
 
 <p align="center">
-  <sub>Built with obsessive context efficiency by <a href="https://github.com/aMilkStack">Ethan Lee</a></sub>
+  <sub>Built by <a href="https://github.com/aMilkStack">Ethan Lee</a></sub>
 </p>
