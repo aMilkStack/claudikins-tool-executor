@@ -26,7 +26,6 @@ coverage/
 # Local dev files (keep locally, don't ship)
 /.claude/
 /src/
-/scripts/
 /tests/
 /tsconfig.json
 /CLAUDE.md

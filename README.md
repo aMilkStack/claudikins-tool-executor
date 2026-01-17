@@ -17,15 +17,15 @@
 
 <p align="center">
   <a href="#quick-start">Quick Start</a> •
-  <a href="#the-3-primitives">The 3 Primitives</a> •
-  <a href="#how-it-works">How It Works</a> •
+  <a href="#the-3-tool-workflow">The 3-Tool Workflow</a> •
+  <a href="#wrapped-servers">Wrapped Servers</a> •
   <a href="#configuration">Configuration</a> •
   <a href="#roadmap">Roadmap</a>
 </p>
 
 ---
 
-Anthropic's API users get [programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling) - Claude writes code, executes N tools in a sandbox, returns once. Claude Code users get serial execution and lazy loading. Tool Executor brings the API pattern to Claude Code.
+Anthropic's API users get [programmatic tool calling](https://docs.anthropic.com/en/docs/build-with-claude/tool-use) - Claude writes code, executes N tools in a sandbox, returns once. Claude Code users get serial execution and lazy loading. Tool Executor brings the API pattern to Claude Code.
 
 | Aspect | Claude Code (stable) | Claude Code 2.1.7 | Tool Executor |
 |--------|---------------------|------------------|---------------|
@@ -34,7 +34,7 @@ Anthropic's API users get [programmatic tool calling](https://platform.claude.co
 | **Output Handling** | Dumps to context | Dumps to context | Auto-saves to workspace |
 | **Tool Awareness** | All schemas visible | "Search available" | Hook-injected guidance |
 
-On stable versions: **98% token reduction** (48k → 1.1k for 10-tool workflows). On 2.1.7: schema loading is similar, but execution and output handling still save significant context.
+**Context savings:** ~97% reduction (48k to 1.1k tokens) for multi-tool workflows.
 
 ---
 
@@ -63,19 +63,27 @@ Claude will:
 
 ---
 
-## The 3 Primitives
+## The 3-Tool Workflow
 
 Tool Executor exposes exactly 3 tools. Everything else happens inside the sandbox.
 
+```mermaid
+flowchart LR
+    A[search_tools] --> B[get_tool_schema] --> C[execute_code]
+    C --> D{Result > 200 chars?}
+    D -->|Yes| E[Auto-save to workspace]
+    D -->|No| F[Return inline]
+```
+
 ### `search_tools` - Find by Intent
 
-Semantic search across 87+ wrapped tools. Powered by Serena embeddings with BM25 fallback.
+Semantic search across 96 wrapped tools. Serena powers the search with BM25 fallback.
 
 ```json
 { "query": "generate images", "limit": 5 }
 ```
 
-Returns slim results: name, server, description. No schemas loaded until you need them.
+Returns slim results: name, server, 80-char description. No schemas loaded until needed.
 
 ### `get_tool_schema` - Load on Demand
 
@@ -99,7 +107,8 @@ const result = await gemini["gemini_generateContent"]({
 
 // Large responses auto-save to workspace
 if (result._savedTo) {
-  console.log(`Saved to: ${result._savedTo}`);
+  const full = await workspace.readJSON(result._savedTo);
+  console.log("Generated:", full);
 }
 ```
 
@@ -121,7 +130,7 @@ if (result._savedTo) {
 │         │                │                    │              │
 │         ▼                ▼                    ▼              │
 │  ┌──────────────────────────────────────────────────────┐   │
-│  │              Registry (87 tool definitions)           │   │
+│  │              Registry (96 tool definitions)           │   │
 │  │         Serena semantic search + BM25 fallback        │   │
 │  └──────────────────────────────────────────────────────┘   │
 │                                                              │
@@ -140,10 +149,10 @@ if (result._savedTo) {
    └─────────┘      └─────────┘       └─────────┘
 ```
 
-**The SessionStart Hook**
+### Session Hooks
 
 Unlike native MCP, Tool Executor injects guidance every session. Claude knows:
-- What MCP categories exist (ai-models, code-nav, web, knowledge)
+- What MCP categories exist (ai-models, code-nav, web, knowledge, reasoning, ui)
 - When to use MCP vs basic tools
 - The exact search → schema → execute workflow
 
@@ -163,7 +172,7 @@ const scrapeResult = await apify["apify_scrape"]({ url: "https://example.com" })
 // Large response auto-saved
 // { _savedTo: "mcp-results/1705312345678.json", _preview: "...", _size: 15234 }
 
-// Read when needed
+// Read when needed (inside execute_code)
 const fullData = await workspace.readJSON(scrapeResult._savedTo);
 ```
 
@@ -173,19 +182,53 @@ Context stays lean. Data stays accessible.
 
 ## Wrapped Servers
 
-Pre-configured MCP servers available in the sandbox:
+Pre-configured MCP servers available in the sandbox. These are examples - configure your own.
 
-| Server | Category | Tools | Purpose |
-|--------|----------|-------|---------|
-| `gemini` | ai-models | 26 | Image/video generation, queries, analysis |
-| `serena` | code-nav | 11 | Semantic code search, project navigation |
-| `apify` | web | 17 | Web scraping, actor management |
-| `context7` | knowledge | 9 | Context management |
-| `notebooklm` | knowledge | 13 | Notebook analysis |
-| `shadcn` | ui | 10 | UI component tools |
-| `sequentialThinking` | reasoning | 1 | Step-by-step reasoning |
+| Server | Category | Tools | Capabilities |
+|--------|----------|-------|--------------|
+| `serena` | code-nav | 29 | Semantic code search, symbol references, refactoring (rename/replace), file ops, shell execution, persistent memory, pattern search |
+| `gemini` | ai-models | 37 | Deep research agent, Claude+Gemini brainstorming, code analysis, structured output, 4K image gen + multi-turn editing, video gen, TTS, Google search |
+| `notebooklm` | knowledge | 16 | Notebook management, Q&A, research, library stats |
+| `apify` | web | 7 | Actor-based web scraping, RAG browser, data extraction |
+| `shadcn` | ui | 4 | Component search, details, examples |
+| `context7` | knowledge | 2 | Library docs lookup, library ID resolution |
+| `sequentialThinking` | reasoning | 1 | Multi-step reasoning with thought chains |
 
-**87 tools. 3 exposed. 98% fewer tokens.**
+**96 tools. 3 exposed. ~97% fewer tokens.**
+
+> **Note:** Serena is required. It powers both `search_tools` discovery AND is available as a full client in the sandbox.
+
+---
+
+## Plugin Structure
+
+<details>
+<summary>View directory layout</summary>
+
+```
+claudikins-tool-executor/
+├── .claude-plugin/
+│   ├── plugin.json              # Plugin manifest
+│   ├── hooks/
+│   │   ├── hooks.json           # Hook definitions
+│   │   ├── session-start.sh     # Injects usage guidance
+│   │   └── search-tools-activation.sh
+│   └── skills/using-tool-executor/
+├── dist/                        # Compiled server
+├── registry/                    # 96 YAML tool definitions
+│   ├── ai-models/gemini/        # 37 tools
+│   ├── code-nav/serena/         # 29 tools
+│   ├── knowledge/               # context7 (2) + notebooklm (16)
+│   ├── reasoning/               # sequentialThinking (1)
+│   ├── ui/shadcn/               # 4 tools
+│   └── web/apify/               # 7 tools
+├── skills/                      # te-guide, te-config, te-doctor
+├── commands/                    # Slash commands
+├── agents/                      # tool-executor-guide agent
+└── workspace/                   # Runtime storage
+```
+
+</details>
 
 ---
 
@@ -209,12 +252,19 @@ Works out of the box. For custom servers, create `tool-executor.config.json`:
 }
 ```
 
-Some servers need API keys:
+<details>
+<summary>Environment Variables</summary>
 
-```bash
-export GEMINI_API_KEY="your-key"
-export APIFY_TOKEN="your-token"
-```
+Some bundled servers need API keys:
+
+| Server | Variable | Required |
+|--------|----------|----------|
+| gemini | `GEMINI_API_KEY` | Yes for Gemini tools |
+| apify | `APIFY_TOKEN` | Yes for Apify tools |
+
+Set in Claude Code config (`~/.claude.json`) or shell environment.
+
+</details>
 
 ---
 
@@ -229,50 +279,12 @@ Tool Executor optimises for breadth. Skip it if:
 
 ---
 
-## Roadmap
-
-### Immediate
-
-| Feature | Why |
-|---------|-----|
-| Structured `_savedTo` preview | Show type, length, keys instead of truncated text |
-| Fluent `.full()` method | Zero-friction access to saved data |
-| Actionable error messages | Include recovery steps, not just stack traces |
-
-### Short-Term
-
-| Feature | Why |
-|---------|-----|
-| Pre-indexed vector search | Remove Serena dependency for tool discovery |
-| Generated type definitions | IDE autocomplete in execute_code snippets |
-| Additional hookify rules | Catch common mistakes before they waste tokens |
-
-### Medium-Term
-
-| Feature | Why |
-|---------|-----|
-| Result streaming | Handle very large responses gracefully |
-| Priority-based connection pooling | Smarter MCP client lifecycle |
-| Intelligent caching layer | Reduce redundant MCP calls |
-
-### Community Contributions Welcome
-
-- [ ] Add `LICENSE` file (MIT declared in package.json)
-- [ ] Add `tests/` directory (Vitest configured)
-- [ ] Add `examples/` directory
-- [ ] Add `CONTRIBUTING.md`
-- [ ] Add `CHANGELOG.md`
-
----
-
-## Skills & Hooks
-
-As a Claude Code plugin:
+## Skills & Commands
 
 **Skills:**
-- `/te-doctor` - Diagnose connection issues
 - `/te-guide` - Usage guidance and examples
 - `/te-config` - Configuration help
+- `/te-doctor` - Diagnose connection issues
 
 **Hooks:**
 - `SessionStart` - Injects tool guidance every session
@@ -280,9 +292,43 @@ As a Claude Code plugin:
 
 ---
 
+## Roadmap
+
+### Immediate
+
+| Feature | Status |
+|---------|--------|
+| Fluent `.full()` method for `_savedTo` results | Planned |
+| Structured preview metadata (type, keys, shape) | Planned |
+| Actionable error messages with recovery steps | Planned |
+
+### Short-Term
+
+| Feature | Status |
+|---------|--------|
+| Pre-indexed vector search (faster startup) | Considering |
+| Generated TypeScript definitions for autocomplete | Considering |
+
+### Not Planned
+
+| Feature | Why |
+|---------|-----|
+| Production API replacement | Out of scope - this is a dev tool |
+| Streaming MCP proxy | Complexity vs benefit |
+| Universal MCP wrapper | Claude Code-specific by design |
+
+### Community Contributions Welcome
+
+- [ ] Add `LICENSE` file (MIT declared in package.json)
+- [ ] Add `examples/` directory
+- [ ] Add `CONTRIBUTING.md`
+- [ ] Add `CHANGELOG.md`
+
+---
+
 ## Part of Claudikins
 
-Tool Executor is one component of the Claudikins framework:
+Tool Executor is one component of the Claudikins ecosystem:
 
 - **Tool Executor** - Programmatic MCP execution (you are here)
 - **Automatic Context Manager** - Context handoff automation
