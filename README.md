@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="banner.png" alt="Tool Executor - Programmatic MCP Execution for Claude Code" width="100%">
+  <img src="assets/banner.png" alt="Tool Executor - Programmatic MCP Execution for Claude Code" width="100%">
 </p>
 
 <p align="center">
@@ -27,14 +27,14 @@
 
 Anthropic's API users get [programmatic tool calling](https://platform.claude.com/docs/en/agents-and-tools/tool-use/programmatic-tool-calling) - Claude writes code, executes N tools in a sandbox, returns once. Claude Code users get serial execution and lazy loading. Tool Executor brings the API pattern to Claude Code.
 
-| Aspect | Claude Code 2.1.7 | Tool Executor |
-|--------|------------------|---------------|
-| **Execution** | Serial (pause per tool) | Batched (N tools, 1 return) |
-| **Output Handling** | Dumps to context | Auto-saves to workspace |
-| **Tool Awareness** | "Search available" | Hook-injected guidance |
-| **Token Cost (10 tools)** | ~48,000 tokens | ~1,100 tokens |
+| Aspect | Claude Code (stable) | Claude Code 2.1.7 | Tool Executor |
+|--------|---------------------|------------------|---------------|
+| **Schema Loading** | All upfront | Lazy (>10% threshold) | Lazy (search on demand) |
+| **Execution** | Serial (pause per tool) | Serial (pause per tool) | Batched (N tools, 1 return) |
+| **Output Handling** | Dumps to context | Dumps to context | Auto-saves to workspace |
+| **Tool Awareness** | All schemas visible | "Search available" | Hook-injected guidance |
 
-98% reduction. Same tools. Different execution model.
+On stable versions: **98% token reduction** (48k → 1.1k for 10-tool workflows). On 2.1.7: schema loading is similar, but execution and output handling still save significant context.
 
 ---
 
@@ -231,20 +231,29 @@ Tool Executor optimises for breadth. Skip it if:
 
 ## Roadmap
 
-### Developer Experience
+### Immediate
 
-| Feature | Why | Effort |
-|---------|-----|--------|
-| `--verbose` flag | Debug MCP connection issues | Low |
-| `--json` output | Pipe search results to jq | Low |
-| Config file docs | Clear custom server examples | Low |
+| Feature | Why |
+|---------|-----|
+| Structured `_savedTo` preview | Show type, length, keys instead of truncated text |
+| Fluent `.full()` method | Zero-friction access to saved data |
+| Actionable error messages | Include recovery steps, not just stack traces |
 
-### Technical Hardening
+### Short-Term
 
-| Location | Issue | Fix |
-|----------|-------|-----|
-| `src/search.ts:363` | Linear scan O(n) | Index tools by name |
-| `src/search.ts:251` | Sequential file loading | Parallelise with Promise.all |
+| Feature | Why |
+|---------|-----|
+| Pre-indexed vector search | Remove Serena dependency for tool discovery |
+| Generated type definitions | IDE autocomplete in execute_code snippets |
+| Additional hookify rules | Catch common mistakes before they waste tokens |
+
+### Medium-Term
+
+| Feature | Why |
+|---------|-----|
+| Result streaming | Handle very large responses gracefully |
+| Priority-based connection pooling | Smarter MCP client lifecycle |
+| Intelligent caching layer | Reduce redundant MCP calls |
 
 ### Community Contributions Welcome
 
