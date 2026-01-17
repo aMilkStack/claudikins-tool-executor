@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aMilkStack/claudikins-tool-executor.git"
+    "url": "git+https://github.com/elb-pr/claudikins-tool-executor.git"
   },
   "keywords": [
     "mcp",
@@ -23,9 +23,9 @@
   "author": "Ethan Lee",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/aMilkStack/claudikins-tool-executor/issues"
+    "url": "https://github.com/elb-pr/claudikins-tool-executor/issues"
   },
-  "homepage": "https://github.com/aMilkStack/claudikins-tool-executor#readme",
+  "homepage": "https://github.com/elb-pr/claudikins-tool-executor#readme",
   "files": [
     "dist",
     "registry",

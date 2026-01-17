@@ -5,7 +5,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Claude-D97757?style=flat-square&logo=claude&logoColor=white" alt="Claude">
   <img src="https://img.shields.io/badge/Gemini-8E75B2?style=flat-square&logo=google%20gemini&logoColor=white" alt="Google Gemini">
-  <a href="https://github.com/aMilkStack/claudikins-tool-executor/commits/main"><img src="https://img.shields.io/github/last-commit/aMilkStack/claudikins-tool-executor?style=flat-square" alt="Last Commit"></a>
+  <a href="https://github.com/elb-pr/claudikins-tool-executor/commits/main"><img src="https://img.shields.io/github/last-commit/elb-pr/claudikins-tool-executor?style=flat-square" alt="Last Commit"></a>
   <img src="https://img.shields.io/badge/node-18%2B-brightgreen?style=flat-square" alt="Node.js 18+">
   <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License">
 </p>
@@ -44,7 +44,7 @@ Anthropic's API users get [programmatic tool calling](https://docs.anthropic.com
 
 ```bash
 # Add the Claudikins marketplace
-/marketplace add aMilkStack/claudikins-marketplace
+/marketplace add elb-pr/claudikins-marketplace
 
 # Install the plugin
 /plugin install claudikins-tool-executor
@@ -337,7 +337,7 @@ Tool Executor is one component of the Claudikins ecosystem:
 - **Klaus** - Debugging with Germanic precision
 - **GRFP** - README generation through dual-AI analysis
 
-[View the marketplace](https://github.com/aMilkStack/claudikins-marketplace)
+[View the marketplace](https://github.com/elb-pr/claudikins-marketplace)
 
 ---
 
@@ -348,5 +348,5 @@ Tool Executor is one component of the Claudikins ecosystem:
 ---
 
 <p align="center">
-  <sub>Built by <a href="https://github.com/aMilkStack">Ethan Lee</a></sub>
+  <sub>Built by <a href="https://github.com/elb-pr">Ethan Lee</a></sub>
 </p>
