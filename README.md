@@ -3,9 +3,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/aMilkStack/claudikins-tool-executor/actions"><img src="https://img.shields.io/github/actions/workflow/status/aMilkStack/claudikins-tool-executor/ci.yml?style=flat-square" alt="Build Status"></a>
-  <a href="https://www.npmjs.com/package/claudikins-tool-executor"><img src="https://img.shields.io/npm/v/claudikins-tool-executor?style=flat-square" alt="npm version"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License"></a>
+  <a href="https://github.com/aMilkStack/claudikins-tool-executor/commits/main"><img src="https://img.shields.io/github/last-commit/aMilkStack/claudikins-tool-executor?style=flat-square" alt="Last Commit"></a>
+  <img src="https://img.shields.io/badge/node-18%2B-brightgreen?style=flat-square" alt="Node.js 18+">
+  <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="License">
 </p>
 
 <h1 align="center">Tool Executor</h1>
