@@ -1,6 +1,6 @@
 ---
 name: tool-executor-guide
-whenToUse: |
+description: |
   Use this agent when users ask about the Claudikins Tool Executor MCP server - how to use it, configure it, or troubleshoot it. This agent has deep knowledge of the codebase and can help with usage patterns, adding MCP servers, and diagnosing issues.
 
   <example>

@@ -1,8 +1,13 @@
 {
   "name": "claudikins-tool-executor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Configurable MCP wrapper that consolidates your tools into just 3, using semantic search for on-demand discovery and sandboxed TypeScript execution. Ships with 7 example servers (96 tools) - reduces context consumption by 97% (48k tokens down to 1.1k).",
   "author": {
-    "name": "Ethan Lee"
-  }
+    "name": "elb-pr",
+    "email": "elb.pr.contact@gmail.com"
+  },
+  "homepage": "https://github.com/elb-pr/claudikins-tool-executor",
+  "repository": "https://github.com/elb-pr/claudikins-tool-executor",
+  "license": "MIT",
+  "keywords": ["claude-code", "mcp", "tools", "sandbox", "claudikins"]
 }

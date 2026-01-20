@@ -1,6 +1,6 @@
 {
   "name": "@claudikins/tool-executor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "MCP server that wraps multiple MCP servers into a single context-efficient interface - part of the Claudikins framework",
   "type": "module",
   "main": "dist/index.js",
